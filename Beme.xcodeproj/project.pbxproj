@@ -35,6 +35,7 @@
 		4D316FB41C02760B00A56A65 /* FollowingTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D316FB31C02760B00A56A65 /* FollowingTableViewController.m */; };
 		4D316FBB1C02777500A56A65 /* CaptureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D316FBA1C02777500A56A65 /* CaptureViewController.m */; };
 		4D316FBE1C02778000A56A65 /* PlaybackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D316FBD1C02778000A56A65 /* PlaybackViewController.m */; };
+		4D5140871C027E2D00476D02 /* NSUserDefaults+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D5140861C027E2D00476D02 /* NSUserDefaults+Additions.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -93,6 +94,8 @@
 		4D316FBA1C02777500A56A65 /* CaptureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CaptureViewController.m; sourceTree = "<group>"; };
 		4D316FBC1C02778000A56A65 /* PlaybackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaybackViewController.h; sourceTree = "<group>"; };
 		4D316FBD1C02778000A56A65 /* PlaybackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaybackViewController.m; sourceTree = "<group>"; };
+		4D5140851C027E2D00476D02 /* NSUserDefaults+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaults+Additions.h"; sourceTree = "<group>"; };
+		4D5140861C027E2D00476D02 /* NSUserDefaults+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUserDefaults+Additions.m"; sourceTree = "<group>"; };
 		624A7104291B2A1DC7E56009 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		66D703FAF716148B0834CB33 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -208,6 +211,8 @@
 				4D316F641C025CDD00A56A65 /* UIColor+Additions.m */,
 				4D316F871C026F3800A56A65 /* UIViewController+Additions.h */,
 				4D316F881C026F3800A56A65 /* UIViewController+Additions.m */,
+				4D5140851C027E2D00476D02 /* NSUserDefaults+Additions.h */,
+				4D5140861C027E2D00476D02 /* NSUserDefaults+Additions.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -475,6 +480,7 @@
 				4D316F891C026F3800A56A65 /* UIViewController+Additions.m in Sources */,
 				4D316F601C025C8D00A56A65 /* BaseTableViewController.m in Sources */,
 				4D316F681C025D5B00A56A65 /* SignupViewController.m in Sources */,
+				4D5140871C027E2D00476D02 /* NSUserDefaults+Additions.m in Sources */,
 				4D316FB11C0275FC00A56A65 /* FollowerTableViewController.m in Sources */,
 				4D316FAD1C0275E400A56A65 /* BaseFollowTableViewController.m in Sources */,
 				4D316FA41C02754E00A56A65 /* AccountTableViewController.m in Sources */,

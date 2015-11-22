@@ -11,6 +11,9 @@
 #import "BaseNavigationController.h"
 #import "SignupViewController.h"
 
+// utilities
+#import "NSUserDefaults+Additions.h"
+
 @interface OnboardingViewController()
 @property (nonatomic, strong) BaseButton *gettingStartedButton;
 @end
@@ -31,6 +34,15 @@
     }
     
     return self;
+}
+
+#pragma mark - Lifecycle
+
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    
+    // set flag so when the app is killed we will skip onboarding and come straight here.
+    [[NSUserDefaults standardUserDefaults] markSignupShown];
 }
 
 #pragma mark - Actions
