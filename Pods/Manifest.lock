@@ -1,0 +1,42 @@
+PODS:
+  - Bolts/Tasks (1.5.0)
+  - Crashlytics (3.4.1):
+    - Fabric (~> 1.6.0)
+  - Digits (1.13.1):
+    - TwitterCore (= 1.13.1)
+  - Fabric (1.6.1)
+  - Masonry (0.6.3)
+  - NSDate+TimeAgo (1.0.3)
+  - Parse (1.10.0):
+    - Bolts/Tasks (~> 1.5)
+  - TwitterCore (1.13.1):
+    - Fabric
+
+DEPENDENCIES:
+  - Crashlytics
+  - Digits
+  - Fabric
+  - Masonry
+  - NSDate+TimeAgo (from `https://github.com/ericlewis/NSDate-TimeAgo.git`)
+  - Parse
+
+EXTERNAL SOURCES:
+  NSDate+TimeAgo:
+    :git: https://github.com/ericlewis/NSDate-TimeAgo.git
+
+CHECKOUT OPTIONS:
+  NSDate+TimeAgo:
+    :commit: 9d20921c9b1e25613dad0e06df662196aea18f57
+    :git: https://github.com/ericlewis/NSDate-TimeAgo.git
+
+SPEC CHECKSUMS:
+  Bolts: 722ab9a4f8b50fc4ed1b9998a5a7a2b3f16d80b4
+  Crashlytics: 41574a245bc6ae10c55d57f385ebd2004e5bee05
+  Digits: e8d62251f6b461996a829ed2e84a91f6bf14ff34
+  Fabric: bf0ceb04e7c924090efc5f8c55e4fbcca189e0a0
+  Masonry: ff105a956abcd19a618b2028b121cb638d7a8e2f
+  NSDate+TimeAgo: 416f55d2696d3744c313091c5a9280d47f8238fe
+  Parse: 90b2544822200f84b18bfacc4e8b0a3a6c3584a2
+  TwitterCore: 4f6fbd413f6d574d38bfbeeeb5cd75738caf567e
+
+COCOAPODS: 0.39.0
