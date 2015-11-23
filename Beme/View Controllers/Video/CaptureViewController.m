@@ -14,11 +14,8 @@
 // for playing vibration
 #import <AudioToolbox/AudioToolbox.h>
 
-// for saving the data locally
+// for checking type
 #import <MobileCoreServices/MobileCoreServices.h>
-
-// for saving remotely
-#import <Parse/Parse.h>
 
 @interface CaptureViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 @property (nonatomic, strong) NSTimer *finishTimer;
@@ -85,7 +82,6 @@
             self.captureStatusLabel.text = @"";
             self.captureStatusLabel.textColor = [UIColor redColor];
         }
-        
     }
 }
 
@@ -133,48 +129,18 @@
     // save the video to disk
     NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
     NSString *mediaType = [info objectForKey: UIImagePickerControllerMediaType];
-    NSString *filename = [NSString stringWithFormat:@"%lu", (unsigned long)[[NSDate new] hash]];
+    NSString *filename = [[NSString stringWithFormat:@"%lu", (unsigned long)[[NSDate new] hash]] stringByAppendingString:@".mp4"];
     
-    NSURL *uploadURL = [NSURL fileURLWithPath:[[NSTemporaryDirectory() stringByAppendingPathComponent:filename] stringByAppendingString:@".mp4"]];
+    NSURL *uploadURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:filename]];
 
     [self convertVideoToLowQuailtyWithInputURL:videoURL outputURL:uploadURL handler:^(AVAssetExportSession *session) {
         if (CFStringCompare((__bridge CFStringRef) mediaType, kUTTypeMovie, 0) == kCFCompareEqualTo)
         {
-            /* save to camera roll - dev only really for now.
-            NSString *moviePath = [session.outputURL path];
+            if ([self.secondaryDelegate respondsToSelector:@selector(tookVideo:withFilename:)]) {
+                [self.secondaryDelegate tookVideo:session.outputURL withFilename:filename];
+            }
             
-            if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum (moviePath))
-            {
-                UISaveVideoAtPathToSavedPhotosAlbum (moviePath, nil, nil, nil);
-            }*/
-            
-            // call our delegate on inbox and tell them to upload this shit!
-            
-            NSData *imageData = [NSData dataWithContentsOfURL:session.outputURL];
-            PFFile *videofile = [PFFile fileWithName:[filename stringByAppendingString:@".mp4"] data:imageData];
-            
-            [videofile saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-                if (succeeded && !error) {
-                    PFObject* newPhotoObject = [PFObject objectWithClassName:@"VideoObject"];
-                    [newPhotoObject setObject:videofile forKey:@"video"];
-                    
-                    [newPhotoObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                        if (!error) {
-                            [self dismissViewControllerWithVibration];
-                        }
-                        else{
-                            // Error
-                            NSLog(@"Error: %@ %@", error, [error userInfo]);
-                            [self dismissViewControllerWithVibration];
-                        }
-                    }];
-                }else{
-                    [self dismissViewControllerWithVibration];
-                }
-                
-            } progressBlock:^(int percentDone) {
-                NSLog(@"vid upload percent: %i", percentDone);
-            }];
+            [self dismissViewControllerWithVibration];
         }
     }];
 }

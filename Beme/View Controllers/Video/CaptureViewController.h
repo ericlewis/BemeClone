@@ -8,6 +8,10 @@
 
 #import "BaseViewController.h"
 
-@interface CaptureViewController : UIImagePickerController
+@protocol CaptureViewControllerDelegate <NSObject>
+- (void)tookVideo:(NSURL*)outputURL withFilename:(NSString*)name;
+@end
 
+@interface CaptureViewController : UIImagePickerController
+@property (nonatomic, weak) id<CaptureViewControllerDelegate> secondaryDelegate;
 @end

@@ -8,6 +8,7 @@
 
 #import "InboxTableViewController.h"
 #import <Parse/Parse.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 
 #import "BaseNavigationController.h"
 #import "AccountTableViewController.h"
@@ -18,7 +19,7 @@
 // HAX FOR LOGOUT
 #import "SignupViewController.h"
 
-@interface InboxTableViewController ()
+@interface InboxTableViewController () <CaptureViewControllerDelegate>
 @property (nonatomic, strong) CaptureViewController *captureVC;
 @property (nonatomic, strong) UIBarButtonItem *notificationBarButtonItem;
 
@@ -30,6 +31,7 @@
     [super viewDidLoad];
     
     self.captureVC = [CaptureViewController new];
+    self.captureVC.secondaryDelegate = self;
     
     // HAX for when we come from login, since its kind of weird.
     self.navigationItem.hidesBackButton = YES;
@@ -94,12 +96,36 @@
     // we should auth the user here, because that is kind of crappy how Digits works.
 }
 
-// HAX
-- (void)logoutOfTwitter{
-    [PFUser logOut];
-    SignupViewController *signupVC = [SignupViewController new];
-    [self.navigationController setNavigationBarHidden:YES];
-    [self.navigationController setViewControllers:@[signupVC]];
+#pragma mark - CaptureViewControllerDelegate
+
+- (void)tookVideo:(NSURL*)outputURL withFilename:(NSString*)name{    
+    /* save to camera roll - dev only really for now.
+     NSString *moviePath = [session.outputURL path];
+     
+     if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum (moviePath))
+     {
+     UISaveVideoAtPathToSavedPhotosAlbum (moviePath, nil, nil, nil);
+     }*/
+    
+    NSData *imageData = [NSData dataWithContentsOfURL:outputURL];
+    PFFile *videofile = [PFFile fileWithName:name data:imageData];
+
+    [videofile saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        if (succeeded && !error) {
+            PFObject* newPhotoObject = [PFObject objectWithClassName:@"VideoObject"];
+            [newPhotoObject setObject:videofile forKey:@"video"];
+
+            [newPhotoObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                    if (!error) {
+                    } else{
+                    // Error
+                        NSLog(@"Error: %@ %@", error, [error userInfo]);
+                    }
+            }];
+        }
+    } progressBlock:^(int percentDone) {
+        NSLog(@"vid upload percent: %i", percentDone);
+    }];
 }
 
 @end
