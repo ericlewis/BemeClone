@@ -7,6 +7,8 @@
 //
 
 #import "SignupViewController.h"
+#import <Parse/Parse.h>
+#import "PFUser+Digits.h"
 #import "NSUserDefaults+Additions.h"
 
 #import "BaseNavigationController.h"
@@ -82,6 +84,18 @@
     return self;
 }
 
+#pragma mark - Lifecycle
+
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    
+    if (!self.isFirstResponder) {
+        [self becomeFirstResponder];
+    }
+    
+    [[Digits sharedInstance] logOut];
+}
+
 #pragma mark - FirstResponder
 
 - (BaseButton*)inputAccessoryView{
@@ -108,7 +122,22 @@
         if (error) {
             NSLog(@"%@", error);
         }else if (newSession.phoneNumber) {
-            [self showInboxVC];
+            
+            [PFUser loginWithDigitsInBackground:^(PFUser *user, NSError *error) {
+                if(!error && user){
+                    [PFUser currentUser].username = self.usernameField.text;
+                    [[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+                        if (succeeded) {
+                            [self showInboxVC];
+                        }else{
+                            NSLog(@"Error: %@", error);
+                        }
+                    }];
+                }else{
+                    NSLog(@"Error: %@", error);
+                }
+            }];
+            
         }
     }];
 }

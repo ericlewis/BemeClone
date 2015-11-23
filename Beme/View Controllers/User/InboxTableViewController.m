@@ -8,6 +8,8 @@
 
 #import "InboxTableViewController.h"
 
+#import <Parse/Parse.h>
+
 // HAX FOR LOGOUT
 #import "SignupViewController.h"
 
@@ -35,7 +37,7 @@
 
 // HAX
 - (void)logoutOfTwitter{
-    [[Digits sharedInstance] logOut];
+    [PFUser logOut];
     SignupViewController *signupVC = [SignupViewController new];
     [self.navigationController setNavigationBarHidden:YES];
     [self.navigationController setViewControllers:@[signupVC]];

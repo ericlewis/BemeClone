@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "Beme": {
+      "applicationId": "x9P5CtxpZ3o28pIDvAWnPML6TGI5iRu4w7On4ON7"
+    },
+    "_default": {
+      "link": "Beme"
+    }
+  }
+}

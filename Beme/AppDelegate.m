@@ -32,10 +32,13 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [Fabric with:@[[Crashlytics class], [Digits class]]];
+    
+    // never save keys :)
+    [Parse setApplicationId:@"APPKEY" clientKey:@"CLIENTKEY"];
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
-    if ([PFUser currentUser] || [[Digits sharedInstance] session]) {
+    if ([PFUser currentUser]) {
         InboxTableViewController *inboxVC = [InboxTableViewController new];
         BaseNavigationController *navVC = [[BaseNavigationController alloc] initWithRootViewController:inboxVC];
         [self.window setRootViewController:navVC];
