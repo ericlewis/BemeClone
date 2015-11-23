@@ -20,7 +20,7 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
     
-    // hack for when we come from login, since its kind of weird.
+    // HAX for when we come from login, since its kind of weird.
     self.navigationItem.hidesBackButton = YES;
     
     // TEMP HAX - set the right bar button item to a logout trigger.
