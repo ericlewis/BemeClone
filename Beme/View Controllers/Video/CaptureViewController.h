@@ -8,6 +8,6 @@
 
 #import "BaseViewController.h"
 
-@interface CaptureViewController : BaseViewController
+@interface CaptureViewController : UIImagePickerController
 
 @end
