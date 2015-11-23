@@ -151,7 +151,7 @@
             // call our delegate on inbox and tell them to upload this shit!
             
             NSData *imageData = [NSData dataWithContentsOfURL:session.outputURL];
-            PFFile *videofile = [PFFile fileWithName:@"video.mp4" data:imageData];
+            PFFile *videofile = [PFFile fileWithName:[filename stringByAppendingString:@".mp4"] data:imageData];
             
             [videofile saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
                 if (succeeded && !error) {
