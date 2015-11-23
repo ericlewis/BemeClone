@@ -86,7 +86,7 @@
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     
-    [self.captureStatusLabel setText:@""];
+    [self.captureStatusLabel setText:@"RECORDING"];
     self.captureStatusLabel.textColor = [UIColor redColor];
 }
 
