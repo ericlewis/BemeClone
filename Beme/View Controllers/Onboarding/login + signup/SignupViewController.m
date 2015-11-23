@@ -7,6 +7,7 @@
 //
 
 #import "SignupViewController.h"
+#import "NSUserDefaults+Additions.h"
 
 #import "BaseNavigationController.h"
 #import "LoginViewController.h"
@@ -32,6 +33,11 @@
         // fields
         self.usernameField = [UsernameTextField new];
         self.usernameField.inputAccessoryView = self.loginButton;
+        
+        if ([[NSUserDefaults standardUserDefaults] preferredUsername].chuzzle) {
+            self.usernameField.text = [[NSUserDefaults standardUserDefaults] preferredUsername];
+        }
+        
         [self.view addSubview:self.usernameField];
         
         self.phoneNumberField = [PhoneNumberTextField new];
@@ -90,6 +96,8 @@
 }
 
 - (void)showVerificationModalVC{
+    [[NSUserDefaults standardUserDefaults] recordPreferredUsername:self.usernameField.text];
+    
     Digits *digits = [Digits sharedInstance];
     DGTAuthenticationConfiguration *configuration = [[DGTAuthenticationConfiguration alloc] initWithAccountFields:DGTAccountFieldsDefaultOptionMask];
     configuration.phoneNumber = [NSString stringWithFormat:@"+1%@", self.phoneNumberField.text];

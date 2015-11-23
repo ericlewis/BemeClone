@@ -19,12 +19,19 @@
     
     // hack for when we come from login, since its kind of weird.
     self.navigationItem.hidesBackButton = YES;
+    
+    // TEMP HAX - set the right bar button item to a logout trigger.
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(logoutOfTwitter)];
 }
 
 #pragma mark - DGTCompletionViewController
 
 - (void)digitsAuthenticationFinishedWithSession:(DGTSession *)session error:(NSError *)error{
     // we should auth the user here, because that is kind of crappy how Digits works.
+}
+
+- (void)logoutOfTwitter{
+    [[Digits sharedInstance] logOut];
 }
 
 @end

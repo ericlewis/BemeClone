@@ -13,4 +13,7 @@
 - (void)markSignupShown;
 - (BOOL)wasSignupShown;
 
+- (void)recordPreferredUsername:(NSString*)username;
+- (NSString*)preferredUsername;
+
 @end
