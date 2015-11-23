@@ -8,6 +8,9 @@
 
 #import "CaptureViewController.h"
 
+// for downgrading quality :(
+#import <AVFoundation/AVFoundation.h>
+
 // for playing vibration
 #import <AudioToolbox/AudioToolbox.h>
 
@@ -35,10 +38,8 @@
         self.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
         self.mediaTypes = [UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeCamera];
         self.cameraCaptureMode = UIImagePickerControllerCameraCaptureModeVideo;
+        self.videoQuality = UIImagePickerControllerQualityTypeIFrame1280x720;
         
-        // this is lame :(
-        //self.videoMaximumDuration = 7;
-
         // for some reason, reusing this is not a great idea?
         if (!self.captureStatusLabel) {
             UIView *background = [[UIView alloc] initWithFrame:self.view.frame];
@@ -135,18 +136,44 @@
     
     NSLog(@"%@ - %@", videoURL, mediaType);
     
-    if (CFStringCompare((__bridge CFStringRef) mediaType, kUTTypeMovie, 0) == kCFCompareEqualTo)
-    {
-        NSString *moviePath = [[info objectForKey: UIImagePickerControllerMediaURL] path];
-        
-        if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum (moviePath))
+    NSURL *uploadURL = [NSURL fileURLWithPath:[[NSTemporaryDirectory() stringByAppendingPathComponent:@"capturedvideo"] stringByAppendingString:@".mp4"]];
+
+    [self convertVideoToLowQuailtyWithInputURL:videoURL outputURL:uploadURL handler:^(AVAssetExportSession *session) {
+        if (CFStringCompare((__bridge CFStringRef) mediaType, kUTTypeMovie, 0) == kCFCompareEqualTo)
         {
-            UISaveVideoAtPathToSavedPhotosAlbum (moviePath, nil, nil, nil);
+            NSString *moviePath = [session.outputURL path];
+            
+            if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum (moviePath))
+            {
+                UISaveVideoAtPathToSavedPhotosAlbum (moviePath, nil, nil, nil);
+            }
+            
+            NSData *imageData = [NSData dataWithContentsOfURL:session.outputURL];
+            PFFile *videofile = [PFFile fileWithName:@"video.mp4" data:imageData];
+            
+            [videofile saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+                if (succeeded && !error) {
+                    PFObject* newPhotoObject = [PFObject objectWithClassName:@"VideoObject"];
+                    [newPhotoObject setObject:videofile forKey:@"video"];
+                    
+                    [newPhotoObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                        if (!error) {
+                            [self dismissViewControllerWithVibration];
+                        }
+                        else{
+                            // Error
+                            NSLog(@"Error: %@ %@", error, [error userInfo]);
+                            [self dismissViewControllerWithVibration];
+                        }
+                    }];
+                }else{
+                    [self dismissViewControllerWithVibration];
+                }
+                
+            } progressBlock:^(int percentDone) {
+                NSLog(@"vid uplaod %i", percentDone);
+            }];
         }
-    }
-    
-    [self dismissViewControllerAnimated:NO completion:^{
-        [self vibrate];
     }];
 }
 
@@ -169,6 +196,25 @@
 
 - (void)dismissVC{
     [self dismissViewControllerAnimated:NO completion:nil];
+}
+
+- (void)dismissViewControllerWithVibration{
+    [self dismissViewControllerAnimated:NO completion:^{
+        [self vibrate];
+    }];
+}
+
+#pragma mark - Helpers
+
+- (void)convertVideoToLowQuailtyWithInputURL:(NSURL*)inputURL outputURL:(NSURL*)outputURL handler:(void (^)(AVAssetExportSession* session))handler{
+    AVURLAsset *asset = [AVURLAsset URLAssetWithURL:inputURL options:nil];
+    AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:asset presetName:AVAssetExportPresetHighestQuality];
+    exportSession.outputURL = outputURL;
+    exportSession.outputFileType = AVFileTypeMPEG4;
+    
+    [exportSession exportAsynchronouslyWithCompletionHandler:^(void){
+         handler(exportSession);
+     }];
 }
 
 @end
