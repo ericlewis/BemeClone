@@ -134,8 +134,6 @@
     NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
     NSString *mediaType = [info objectForKey: UIImagePickerControllerMediaType];
     
-    NSLog(@"%@ - %@", videoURL, mediaType);
-    
     NSURL *uploadURL = [NSURL fileURLWithPath:[[NSTemporaryDirectory() stringByAppendingPathComponent:@"capturedvideo"] stringByAppendingString:@".mp4"]];
 
     [self convertVideoToLowQuailtyWithInputURL:videoURL outputURL:uploadURL handler:^(AVAssetExportSession *session) {
@@ -171,7 +169,7 @@
                 }
                 
             } progressBlock:^(int percentDone) {
-                NSLog(@"vid uplaod %i", percentDone);
+                NSLog(@"vid upload percent: %i", percentDone);
             }];
         }
     }];
