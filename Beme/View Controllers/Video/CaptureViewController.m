@@ -134,17 +134,20 @@
     NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
     NSString *mediaType = [info objectForKey: UIImagePickerControllerMediaType];
     
-    NSURL *uploadURL = [NSURL fileURLWithPath:[[NSTemporaryDirectory() stringByAppendingPathComponent:@"capturedvideo"] stringByAppendingString:@".mp4"]];
+    NSURL *uploadURL = [NSURL fileURLWithPath:[[NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu", (unsigned long)[[NSDate new] hash]]] stringByAppendingString:@".mp4"]];
 
     [self convertVideoToLowQuailtyWithInputURL:videoURL outputURL:uploadURL handler:^(AVAssetExportSession *session) {
         if (CFStringCompare((__bridge CFStringRef) mediaType, kUTTypeMovie, 0) == kCFCompareEqualTo)
         {
+            /* save to camera roll - dev only really for now.
             NSString *moviePath = [session.outputURL path];
             
             if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum (moviePath))
             {
                 UISaveVideoAtPathToSavedPhotosAlbum (moviePath, nil, nil, nil);
-            }
+            }*/
+            
+            // call our delegate on inbox and tell them to upload this shit!
             
             NSData *imageData = [NSData dataWithContentsOfURL:session.outputURL];
             PFFile *videofile = [PFFile fileWithName:@"video.mp4" data:imageData];
@@ -206,7 +209,7 @@
 
 - (void)convertVideoToLowQuailtyWithInputURL:(NSURL*)inputURL outputURL:(NSURL*)outputURL handler:(void (^)(AVAssetExportSession* session))handler{
     AVURLAsset *asset = [AVURLAsset URLAssetWithURL:inputURL options:nil];
-    AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:asset presetName:AVAssetExportPresetHighestQuality];
+    AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:asset presetName:AVAssetExportPresetMediumQuality];
     exportSession.outputURL = outputURL;
     exportSession.outputFileType = AVFileTypeMPEG4;
     
