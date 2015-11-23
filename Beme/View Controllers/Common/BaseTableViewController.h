@@ -11,4 +11,6 @@
 
 @interface BaseTableViewController : UITableViewController
 
+- (void)commonInit;
+
 @end

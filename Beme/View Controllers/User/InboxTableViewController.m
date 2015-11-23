@@ -7,8 +7,9 @@
 //
 
 #import "InboxTableViewController.h"
-
 #import <Parse/Parse.h>
+
+#import "CaptureViewController.h"
 
 // HAX FOR LOGOUT
 #import "SignupViewController.h"
@@ -27,6 +28,28 @@
     
     // TEMP HAX - set the right bar button item to a logout trigger.
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(logoutOfTwitter)];
+    
+    // Enabled monitoring of the sensor
+    [[UIDevice currentDevice] setProximityMonitoringEnabled:YES];
+    
+    // Set up an observer for proximity changes
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sensorStateChange:)
+                                                 name:@"UIDeviceProximityStateDidChangeNotification" object:nil];
+}
+
+#pragma mark - Prox Sensor
+
+- (void)sensorStateChange:(NSNotificationCenter *)notification
+{
+    if ([[UIDevice currentDevice] proximityState] == YES){
+        [self performSelector:@selector(showCaptureVC) withObject:nil afterDelay:0.2];
+    }
+}
+
+#pragma mark - Actions
+
+- (void)showCaptureVC{
+    [self presentViewController:[CaptureViewController new] animated:NO completion:nil];
 }
 
 #pragma mark - DGTCompletionViewController

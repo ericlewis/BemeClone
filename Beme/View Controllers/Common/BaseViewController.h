@@ -15,4 +15,6 @@
 
 @interface BaseViewController : UIViewController
 
+- (void)commonInit;
+
 @end
