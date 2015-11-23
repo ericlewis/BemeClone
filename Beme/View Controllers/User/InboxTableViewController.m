@@ -9,13 +9,19 @@
 #import "InboxTableViewController.h"
 #import <Parse/Parse.h>
 
+#import "BaseNavigationController.h"
+#import "AccountTableViewController.h"
 #import "CaptureViewController.h"
+
+#import "FontAwesomeKit/FAKIonIcons.h"
 
 // HAX FOR LOGOUT
 #import "SignupViewController.h"
 
 @interface InboxTableViewController ()
 @property (nonatomic, strong) CaptureViewController *captureVC;
+@property (nonatomic, strong) UIBarButtonItem *notificationBarButtonItem;
+
 @end
 
 @implementation InboxTableViewController
@@ -27,9 +33,14 @@
     
     // HAX for when we come from login, since its kind of weird.
     self.navigationItem.hidesBackButton = YES;
+
+    // setting icon
+    FAKIonIcons *icon = [FAKIonIcons iosGearIconWithSize:25];
+    [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithImage:[icon imageWithSize:CGSizeMake(25, 25)] style:UIBarButtonItemStylePlain target:self action:@selector(showAccountVC)]];
     
-    // TEMP HAX - set the right bar button item to a logout trigger.
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(logoutOfTwitter)];
+    self.notificationBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"NO REACTIONS" style:UIBarButtonItemStylePlain target:self action:@selector(showReactionsVC)];
+    self.notificationBarButtonItem.enabled = NO;
+    [self.navigationItem setRightBarButtonItem:self.notificationBarButtonItem];
     
     // Enabled monitoring of the sensor
     [[UIDevice currentDevice] setProximityMonitoringEnabled:YES];
@@ -62,8 +73,19 @@
 
 #pragma mark - Actions
 
+- (void)showReactionsVC{
+
+}
+
 - (void)showCaptureVC{
     [self presentViewController:self.captureVC animated:NO completion:nil];
+}
+
+- (void)showAccountVC{
+    AccountTableViewController *accountVC = [AccountTableViewController new];
+    BaseNavigationController *navVC = [[BaseNavigationController alloc] initWithRootViewController:accountVC];
+    
+    [self presentViewController:navVC animated:YES completion:nil];
 }
 
 #pragma mark - DGTCompletionViewController
