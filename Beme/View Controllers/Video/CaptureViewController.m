@@ -35,13 +35,6 @@
     }
 }
 
-- (void)viewDidLoad{
-    [super viewDidLoad];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sensorStateChange:)
-                                                 name:@"UIDeviceProximityStateDidChangeNotification" object:nil];
-}
-
 #pragma mark - Prox Sensor
 
 - (void)sensorStateChange:(NSNotificationCenter *)notification
@@ -75,6 +68,8 @@
     
     // mmm vibrations, sound coming soon?
     [self vibrate];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sensorStateChange:)
+                                                 name:@"UIDeviceProximityStateDidChangeNotification" object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -90,6 +85,7 @@
     [self.finishTimer invalidate];
     [self.captureStatusLabel setText:@"RECORDING"];
     self.captureStatusLabel.textColor = [UIColor redColor];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Actions
