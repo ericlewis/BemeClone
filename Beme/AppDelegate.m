@@ -40,7 +40,6 @@
         BaseNavigationController *navVC = [[BaseNavigationController alloc] initWithRootViewController:inboxVC];
         [self.window setRootViewController:navVC];
         
-        [[Digits sharedInstance] logOut];
     }else if ([[NSUserDefaults standardUserDefaults] wasSignupShown]) {
         SignupViewController *signupVC = [SignupViewController new];
         BaseNavigationController *navVC = [[BaseNavigationController alloc] initWithRootViewController:signupVC];

@@ -90,8 +90,6 @@
 }
 
 - (void)showVerificationModalVC{
-    [[Digits sharedInstance] logOut];
-
     Digits *digits = [Digits sharedInstance];
     DGTAuthenticationConfiguration *configuration = [[DGTAuthenticationConfiguration alloc] initWithAccountFields:DGTAccountFieldsDefaultOptionMask];
     configuration.phoneNumber = [NSString stringWithFormat:@"+1%@", self.phoneNumberField.text];

@@ -68,7 +68,6 @@
 }
 
 - (void)showVerificationVC{
-    [[Digits sharedInstance] logOut];
     DGTAuthenticationConfiguration *configuration = [[DGTAuthenticationConfiguration alloc] initWithAccountFields:DGTAccountFieldsDefaultOptionMask];
     configuration.phoneNumber = [NSString stringWithFormat:@"+1%@", self.phoneNumberField.text];
     [[Digits sharedInstance] authenticateWithNavigationViewController:self.navigationController configuration:configuration completionViewController:[InboxTableViewController new]];
