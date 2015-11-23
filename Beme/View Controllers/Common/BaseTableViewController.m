@@ -38,6 +38,14 @@
     [self setupBlankBackButton];
     [self.tableView setBackgroundColor:[UIColor commonBackgroundColor]];
     [self.tableView setTableFooterView:[UIView new]];
+    
+    self.activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [self.view addSubview:self.activityIndicatorView];
+    
+    [self.activityIndicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(self.tableView);
+        make.centerY.equalTo(self.tableView).with.offset(-40);
+    }];
 }
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath

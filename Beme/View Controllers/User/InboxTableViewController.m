@@ -53,7 +53,7 @@
     
     // Set up an observer for proximity changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sensorStateChange:)
-                                                 name:@"UIDeviceProximityStateDidChangeNotification" object:nil];
+                                                 name:@"UIDeviceProximityStateDidChangeNotification" object:nil];    
 }
 
 - (void)viewWillDisappear:(BOOL)animated{

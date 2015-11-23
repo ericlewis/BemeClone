@@ -13,4 +13,6 @@
 
 - (void)commonInit;
 
+@property (nonatomic, strong) UIActivityIndicatorView *activityIndicatorView;
+
 @end
