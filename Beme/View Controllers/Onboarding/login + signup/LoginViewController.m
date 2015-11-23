@@ -13,7 +13,7 @@
 
 #import "InboxTableViewController.h"
 
-@interface LoginViewController()
+@interface LoginViewController() <UITextFieldDelegate>
 @property (nonatomic, strong) UsernameTextField *usernameField;
 @property (nonatomic, strong) PhoneNumberTextField *phoneNumberField;
 
@@ -32,15 +32,19 @@
         // fields
         self.usernameField = [UsernameTextField new];
         self.usernameField.inputAccessoryView = self.loginButton;
+        self.usernameField.delegate = self;
         [self.view addSubview:self.usernameField];
         
         self.phoneNumberField = [PhoneNumberTextField new];
         self.phoneNumberField.inputAccessoryView = self.loginButton;
+        self.phoneNumberField.delegate = self;
         [self.view addSubview:self.phoneNumberField];
         
         self.loginButton = [BaseButton new];
         [self.loginButton setDefaultTitle:@"SEND CODE"];
         [self.loginButton setTapForTarget:self withSelector:@selector(showVerificationVC)];
+        [self.loginButton setEnabled:NO];
+
         [self.view addSubview:self.loginButton];
 
         // autolayout
@@ -72,6 +76,20 @@
     configuration.phoneNumber = [NSString stringWithFormat:@"+1%@", self.phoneNumberField.text];
     [[Digits sharedInstance] authenticateWithNavigationViewController:self.navigationController configuration:configuration completionViewController:[InboxTableViewController new]];
 
+}
+
+#pragma mark - UITextFieldDelegate
+
+// TODO IMPROVE
+// just dont allow blank stuff for now.
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
+    if (self.usernameField.text.chuzzle && self.phoneNumberField.text.chuzzle) {
+        [self.loginButton setEnabled:YES];
+    }else{
+        [self.loginButton setEnabled:NO];
+    }
+    
+    return YES;
 }
 
 @end

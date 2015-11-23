@@ -8,6 +8,9 @@
 
 #import "InboxTableViewController.h"
 
+// HAX FOR LOGOUT
+#import "SignupViewController.h"
+
 @interface InboxTableViewController ()
 
 @end
@@ -30,8 +33,12 @@
     // we should auth the user here, because that is kind of crappy how Digits works.
 }
 
+// HAX
 - (void)logoutOfTwitter{
     [[Digits sharedInstance] logOut];
+    SignupViewController *signupVC = [SignupViewController new];
+    [self.navigationController setNavigationBarHidden:YES];
+    [self.navigationController setViewControllers:@[signupVC]];
 }
 
 @end

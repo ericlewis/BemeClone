@@ -16,7 +16,7 @@
 #import "UsernameTextField.h"
 #import "PhoneNumberTextField.h"
 
-@interface SignupViewController()
+@interface SignupViewController() <UITextFieldDelegate>
 @property (nonatomic, strong) UsernameTextField *usernameField;
 @property (nonatomic, strong) PhoneNumberTextField *phoneNumberField;
 
@@ -32,6 +32,7 @@
     if (self = [super init]) {
         // fields
         self.usernameField = [UsernameTextField new];
+        self.usernameField.delegate = self;
         self.usernameField.inputAccessoryView = self.loginButton;
         
         if ([[NSUserDefaults standardUserDefaults] preferredUsername].chuzzle) {
@@ -42,12 +43,14 @@
         
         self.phoneNumberField = [PhoneNumberTextField new];
         self.phoneNumberField.inputAccessoryView = self.loginButton;
+        self.phoneNumberField.delegate = self;
         [self.view addSubview:self.phoneNumberField];
         
         // buttons
         self.signupButton = [BaseButton new];
         [self.signupButton setDefaultTitle:@"SIGN UP"];
         [self.signupButton setTapForTarget:self withSelector:@selector(handleSignup)];
+        [self.signupButton setEnabled:NO];
         [self.view addSubview:self.signupButton];
         
         self.loginButton = [[BaseButton alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), 45)];
@@ -121,6 +124,20 @@
     BaseNavigationController *navVC = [[BaseNavigationController alloc] initWithRootViewController:loginVC];
 
     [self presentViewController:navVC animated:YES completion:nil];
+}
+
+#pragma mark - UITextFieldDelegate
+
+// TODO IMPROVE
+// just dont allow blank stuff for now.
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
+    if (self.usernameField.text.chuzzle && self.phoneNumberField.text.chuzzle) {
+        [self.signupButton setEnabled:YES];
+    }else{
+        [self.signupButton setEnabled:NO];
+    }
+        
+    return YES;
 }
 
 @end
