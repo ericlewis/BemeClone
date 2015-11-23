@@ -10,7 +10,7 @@
 
 #import "BaseNavigationController.h"
 #import "LoginViewController.h"
-#import "VerifyPhoneViewController.h"
+#import "InboxTableViewController.h"
 
 #import "UsernameTextField.h"
 #import "PhoneNumberTextField.h"
@@ -86,20 +86,34 @@
 #pragma mark - Actions
 
 - (void)handleSignup{
-    [self showVerificationVC];
+    [self showVerificationModalVC];
+}
+
+- (void)showVerificationModalVC{
+    [[Digits sharedInstance] logOut];
+
+    Digits *digits = [Digits sharedInstance];
+    DGTAuthenticationConfiguration *configuration = [[DGTAuthenticationConfiguration alloc] initWithAccountFields:DGTAccountFieldsDefaultOptionMask];
+    configuration.phoneNumber = [NSString stringWithFormat:@"+1%@", self.phoneNumberField.text];
+    [digits authenticateWithViewController:nil configuration:configuration completion:^(DGTSession *newSession, NSError *error){
+        if (error) {
+            NSLog(@"%@", error);
+        }else if (newSession.phoneNumber) {
+            [self showInboxVC];
+        }
+    }];
+}
+
+- (void)showInboxVC{
+    InboxTableViewController *inboxVC = [InboxTableViewController new];
+    [(BaseNavigationController*)self.parentViewController setNavigationBarHidden:NO];
+    [(BaseNavigationController*)self.parentViewController setViewControllers:@[inboxVC]];
 }
 
 - (void)showSigninVC{
     LoginViewController *loginVC = [LoginViewController new];
     BaseNavigationController *navVC = [[BaseNavigationController alloc] initWithRootViewController:loginVC];
 
-    [self presentViewController:navVC animated:YES completion:nil];
-}
-
-- (void)showVerificationVC{
-    VerifyPhoneViewController *verifyVC = [[VerifyPhoneViewController alloc] initWithType:VERIFY_SIGNUP];
-    BaseNavigationController *navVC = [[BaseNavigationController alloc] initWithRootViewController:verifyVC];
-    
     [self presentViewController:navVC animated:YES completion:nil];
 }
 

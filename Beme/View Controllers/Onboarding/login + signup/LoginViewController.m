@@ -8,10 +8,10 @@
 
 #import "LoginViewController.h"
 
-#import "VerifyPhoneViewController.h"
-
 #import "UsernameTextField.h"
 #import "PhoneNumberTextField.h"
+
+#import "InboxTableViewController.h"
 
 @interface LoginViewController()
 @property (nonatomic, strong) UsernameTextField *usernameField;
@@ -67,11 +67,12 @@
     return self;
 }
 
-#pragma mark - Actions
-
 - (void)showVerificationVC{
-    VerifyPhoneViewController *verifyVC = [[VerifyPhoneViewController alloc] initWithType:VERIFY_LOGIN];
-    [self.navigationController pushViewController:verifyVC animated:YES];
+    [[Digits sharedInstance] logOut];
+    DGTAuthenticationConfiguration *configuration = [[DGTAuthenticationConfiguration alloc] initWithAccountFields:DGTAccountFieldsDefaultOptionMask];
+    configuration.phoneNumber = [NSString stringWithFormat:@"+1%@", self.phoneNumberField.text];
+    [[Digits sharedInstance] authenticateWithNavigationViewController:self.navigationController configuration:configuration completionViewController:[InboxTableViewController new]];
+
 }
 
 @end

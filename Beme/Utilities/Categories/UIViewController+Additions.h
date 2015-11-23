@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <DigitsKit/DigitsKit.h>
 
 @interface UIViewController (Additions)
 

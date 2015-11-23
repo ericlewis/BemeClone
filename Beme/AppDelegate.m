@@ -7,6 +7,9 @@
 //
 
 #import "AppDelegate.h"
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
+#import <DigitsKit/DigitsKit.h>
 
 // network
 #import <Parse/Parse.h>
@@ -28,14 +31,16 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    
+    [Fabric with:@[[Crashlytics class], [Digits class]]];
+
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
-    if ([PFUser currentUser]) {
+    if ([PFUser currentUser] || [[Digits sharedInstance] session]) {
         InboxTableViewController *inboxVC = [InboxTableViewController new];
         BaseNavigationController *navVC = [[BaseNavigationController alloc] initWithRootViewController:inboxVC];
         [self.window setRootViewController:navVC];
         
+        [[Digits sharedInstance] logOut];
     }else if ([[NSUserDefaults standardUserDefaults] wasSignupShown]) {
         SignupViewController *signupVC = [SignupViewController new];
         BaseNavigationController *navVC = [[BaseNavigationController alloc] initWithRootViewController:signupVC];

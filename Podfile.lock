@@ -1,5 +1,6 @@
 PODS:
   - Bolts/Tasks (1.5.0)
+  - ChuzzleKit (1.0.6)
   - Crashlytics (3.4.1):
     - Fabric (~> 1.6.0)
   - Digits (1.13.1):
@@ -13,6 +14,7 @@ PODS:
     - Fabric
 
 DEPENDENCIES:
+  - ChuzzleKit
   - Crashlytics
   - Digits
   - Fabric
@@ -31,6 +33,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Bolts: 722ab9a4f8b50fc4ed1b9998a5a7a2b3f16d80b4
+  ChuzzleKit: 984f4cc912001d46fd0c76024dd674aba6da7c57
   Crashlytics: 41574a245bc6ae10c55d57f385ebd2004e5bee05
   Digits: e8d62251f6b461996a829ed2e84a91f6bf14ff34
   Fabric: bf0ceb04e7c924090efc5f8c55e4fbcca189e0a0

@@ -14,4 +14,17 @@
 
 @implementation InboxTableViewController
 
+- (void)viewDidLoad{
+    [super viewDidLoad];
+    
+    // hack for when we come from login, since its kind of weird.
+    self.navigationItem.hidesBackButton = YES;
+}
+
+#pragma mark - DGTCompletionViewController
+
+- (void)digitsAuthenticationFinishedWithSession:(DGTSession *)session error:(NSError *)error{
+    // we should auth the user here, because that is kind of crappy how Digits works.
+}
+
 @end

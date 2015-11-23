@@ -7,5 +7,6 @@
 //
 
 #import "Masonry.h"
+#import "Chuzzle.h"
 #import "UIColor+Additions.h"
 #import "UIViewController+Additions.h"

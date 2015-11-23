@@ -6,6 +6,7 @@ pod 'NSDate+TimeAgo', :git => 'https://github.com/ericlewis/NSDate-TimeAgo.git'
 pod 'Fabric'
 pod 'Crashlytics'
 pod 'Digits'
+pod 'ChuzzleKit'
 
 # GUI
 pod 'Masonry'
