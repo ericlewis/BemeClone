@@ -1,5 +1,5 @@
 //
-//  BaseViewController.h
+//  BaseLabel.h
 //  Beme
 //
 //  Created by Eric Lewis on 11/22/15.
@@ -7,10 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CommonViewHeaders.h"
 
-@interface BaseViewController : UIViewController
-
-- (void)commonInit;
+@interface BaseLabel : UILabel
 
 @end

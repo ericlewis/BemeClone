@@ -15,13 +15,15 @@
 #import "SignupViewController.h"
 
 @interface InboxTableViewController ()
-
+@property (nonatomic, strong) CaptureViewController *captureVC;
 @end
 
 @implementation InboxTableViewController
 
 - (void)viewDidLoad{
     [super viewDidLoad];
+    
+    self.captureVC = [CaptureViewController new];
     
     // HAX for when we come from login, since its kind of weird.
     self.navigationItem.hidesBackButton = YES;
@@ -42,14 +44,14 @@
 - (void)sensorStateChange:(NSNotificationCenter *)notification
 {
     if ([[UIDevice currentDevice] proximityState] == YES){
-        [self performSelector:@selector(showCaptureVC) withObject:nil afterDelay:0.2];
+        [self showCaptureVC];
     }
 }
 
 #pragma mark - Actions
 
 - (void)showCaptureVC{
-    [self presentViewController:[CaptureViewController new] animated:NO completion:nil];
+    [self presentViewController:self.captureVC animated:NO completion:nil];
 }
 
 #pragma mark - DGTCompletionViewController

@@ -37,6 +37,7 @@
 		4D316FBE1C02778000A56A65 /* PlaybackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D316FBD1C02778000A56A65 /* PlaybackViewController.m */; };
 		4D5140871C027E2D00476D02 /* NSUserDefaults+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D5140861C027E2D00476D02 /* NSUserDefaults+Additions.m */; };
 		4D8FAEF51C029F1E00756DBF /* PFUser+Digits.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8FAEF41C029F1E00756DBF /* PFUser+Digits.m */; };
+		4D8FAEF81C02AF2F00756DBF /* BaseLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8FAEF71C02AF2F00756DBF /* BaseLabel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -99,6 +100,8 @@
 		4D5140861C027E2D00476D02 /* NSUserDefaults+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUserDefaults+Additions.m"; sourceTree = "<group>"; };
 		4D8FAEF31C029F1E00756DBF /* PFUser+Digits.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PFUser+Digits.h"; path = "Vendor/PFUser-Digits/PFUser+Digits.h"; sourceTree = SOURCE_ROOT; };
 		4D8FAEF41C029F1E00756DBF /* PFUser+Digits.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "PFUser+Digits.m"; path = "Vendor/PFUser-Digits/PFUser+Digits.m"; sourceTree = SOURCE_ROOT; };
+		4D8FAEF61C02AF2F00756DBF /* BaseLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseLabel.h; sourceTree = "<group>"; };
+		4D8FAEF71C02AF2F00756DBF /* BaseLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseLabel.m; sourceTree = "<group>"; };
 		624A7104291B2A1DC7E56009 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		66D703FAF716148B0834CB33 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -253,6 +256,8 @@
 				4D316F731C025E9100A56A65 /* BaseButton.m */,
 				4D316F781C02621200A56A65 /* BaseTextField.h */,
 				4D316F791C02621200A56A65 /* BaseTextField.m */,
+				4D8FAEF61C02AF2F00756DBF /* BaseLabel.h */,
+				4D8FAEF71C02AF2F00756DBF /* BaseLabel.m */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -497,6 +502,7 @@
 				4D316F401C02569200A56A65 /* main.m in Sources */,
 				4D316FBE1C02778000A56A65 /* PlaybackViewController.m in Sources */,
 				4D316F891C026F3800A56A65 /* UIViewController+Additions.m in Sources */,
+				4D8FAEF81C02AF2F00756DBF /* BaseLabel.m in Sources */,
 				4D316F601C025C8D00A56A65 /* BaseTableViewController.m in Sources */,
 				4D316F681C025D5B00A56A65 /* SignupViewController.m in Sources */,
 				4D5140871C027E2D00476D02 /* NSUserDefaults+Additions.m in Sources */,

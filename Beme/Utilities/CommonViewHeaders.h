@@ -10,3 +10,8 @@
 #import "Chuzzle.h"
 #import "UIColor+Additions.h"
 #import "UIViewController+Additions.h"
+
+// common views used throughout
+#import "BaseButton.h"
+#import "BaseTextField.h"
+#import "BaseLabel.h"
