@@ -14,4 +14,11 @@
 
 @implementation FollowerTableViewController
 
+- (void)commonInit{
+    [super commonInit];
+    
+    self.title = @"RECENT FOLLOWERS";
+    
+}
+
 @end

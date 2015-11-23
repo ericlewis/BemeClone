@@ -14,4 +14,11 @@
 
 @implementation SettingsTableViewController
 
+- (void)commonInit{
+    [super commonInit];
+    
+    self.title = @"SETTINGS";
+
+}
+
 @end

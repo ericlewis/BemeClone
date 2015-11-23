@@ -9,6 +9,11 @@
 #import "AccountTableViewController.h"
 #import <Parse/Parse.h>
 
+#import "SettingsTableViewController.h"
+#import "FindFriendsTableViewController.h"
+#import "FollowerTableViewController.h"
+#import "FollowingTableViewController.h"
+
 typedef NS_ENUM(NSInteger, AccountRows) {
     FIND_FRIENDS_ROW,
     FOLLOWING_ROW,
@@ -33,6 +38,10 @@ typedef NS_ENUM(NSInteger, AccountRows) {
     [self setupModalDismissButton];
     
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:NSStringFromClass([UITableViewCell class])];
+    
+    // TODO
+    // header view, with user info n stuff.
+    [self.tableView setTableHeaderView:[[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), CGRectGetWidth(self.view.frame)/2.5f)]];
 }
 
 #pragma mark - UITableViewDelegate
@@ -64,10 +73,39 @@ typedef NS_ENUM(NSInteger, AccountRows) {
             
             break;
         }
-
     }
     
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    id viewController;
+    
+    switch (indexPath.row) {
+        case FIND_FRIENDS_ROW: {
+            viewController = [FindFriendsTableViewController new];
+            break;
+        }
+            
+        case FOLLOWING_ROW: {
+            viewController = [FollowingTableViewController new];
+            break;
+        }
+            
+        case FOLLOWERS_ROW: {
+            viewController = [FollowerTableViewController new];
+            break;
+        }
+            
+        case SETTINGS_ROW: {
+            viewController = [SettingsTableViewController new];
+            break;
+        }
+    }
+    
+    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 #pragma mark - UITableViewDataSource

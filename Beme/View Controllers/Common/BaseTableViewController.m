@@ -35,6 +35,7 @@
 }
 
 - (void)commonInit{
+    [self setupBlankBackButton];
     [self.tableView setBackgroundColor:[UIColor commonBackgroundColor]];
     [self.tableView setTableFooterView:[UIView new]];
 }
