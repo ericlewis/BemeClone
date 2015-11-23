@@ -36,6 +36,7 @@
 
 - (void)commonInit{
     [self.tableView setBackgroundColor:[UIColor commonBackgroundColor]];
+    [self.tableView setTableFooterView:[UIView new]];
 }
 
 @end

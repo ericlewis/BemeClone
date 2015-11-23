@@ -18,7 +18,6 @@
 		4D316F651C025CDD00A56A65 /* UIColor+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D316F641C025CDD00A56A65 /* UIColor+Additions.m */; };
 		4D316F681C025D5B00A56A65 /* SignupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D316F671C025D5B00A56A65 /* SignupViewController.m */; };
 		4D316F6B1C025D7500A56A65 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D316F6A1C025D7500A56A65 /* LoginViewController.m */; };
-		4D316F6E1C025DC700A56A65 /* VerifyPhoneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D316F6D1C025DC700A56A65 /* VerifyPhoneViewController.m */; };
 		4D316F741C025E9100A56A65 /* BaseButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D316F731C025E9100A56A65 /* BaseButton.m */; };
 		4D316F771C02611B00A56A65 /* BaseNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D316F761C02611B00A56A65 /* BaseNavigationController.m */; };
 		4D316F7A1C02621200A56A65 /* BaseTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D316F791C02621200A56A65 /* BaseTextField.m */; };
@@ -61,8 +60,6 @@
 		4D316F671C025D5B00A56A65 /* SignupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignupViewController.m; sourceTree = "<group>"; };
 		4D316F691C025D7500A56A65 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		4D316F6A1C025D7500A56A65 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
-		4D316F6C1C025DC700A56A65 /* VerifyPhoneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerifyPhoneViewController.h; sourceTree = "<group>"; };
-		4D316F6D1C025DC700A56A65 /* VerifyPhoneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerifyPhoneViewController.m; sourceTree = "<group>"; };
 		4D316F721C025E9100A56A65 /* BaseButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseButton.h; sourceTree = "<group>"; };
 		4D316F731C025E9100A56A65 /* BaseButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseButton.m; sourceTree = "<group>"; };
 		4D316F751C02611B00A56A65 /* BaseNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseNavigationController.h; sourceTree = "<group>"; };
@@ -232,8 +229,6 @@
 				4D316F6A1C025D7500A56A65 /* LoginViewController.m */,
 				4D316F661C025D5B00A56A65 /* SignupViewController.h */,
 				4D316F671C025D5B00A56A65 /* SignupViewController.m */,
-				4D316F6C1C025DC700A56A65 /* VerifyPhoneViewController.h */,
-				4D316F6D1C025DC700A56A65 /* VerifyPhoneViewController.m */,
 			);
 			path = "login + signup";
 			sourceTree = "<group>";
@@ -489,7 +484,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4D316F6E1C025DC700A56A65 /* VerifyPhoneViewController.m in Sources */,
 				4D316F851C0265CA00A56A65 /* PhoneNumberTextField.m in Sources */,
 				4D316FAA1C0275CE00A56A65 /* FindFriendsTableViewController.m in Sources */,
 				4D316F771C02611B00A56A65 /* BaseNavigationController.m in Sources */,
