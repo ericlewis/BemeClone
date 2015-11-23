@@ -14,4 +14,11 @@
 
 @implementation FindFriendsTableViewController
 
+- (void)commonInit{
+    [super commonInit];
+    
+    self.title = @"FIND FRIENDS";
+    
+}
+
 @end
