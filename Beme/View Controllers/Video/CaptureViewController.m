@@ -133,8 +133,9 @@
     // save the video to disk
     NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
     NSString *mediaType = [info objectForKey: UIImagePickerControllerMediaType];
+    NSString *filename = [NSString stringWithFormat:@"%lu", (unsigned long)[[NSDate new] hash]];
     
-    NSURL *uploadURL = [NSURL fileURLWithPath:[[NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%lu", (unsigned long)[[NSDate new] hash]]] stringByAppendingString:@".mp4"]];
+    NSURL *uploadURL = [NSURL fileURLWithPath:[[NSTemporaryDirectory() stringByAppendingPathComponent:filename] stringByAppendingString:@".mp4"]];
 
     [self convertVideoToLowQuailtyWithInputURL:videoURL outputURL:uploadURL handler:^(AVAssetExportSession *session) {
         if (CFStringCompare((__bridge CFStringRef) mediaType, kUTTypeMovie, 0) == kCFCompareEqualTo)
