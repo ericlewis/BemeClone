@@ -83,6 +83,13 @@
     self.finishTimer = [NSTimer scheduledTimerWithTimeInterval:3.5 target:self selector:@selector(vibrate) userInfo:nil repeats:NO];
 }
 
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    
+    [self.captureStatusLabel setText:@""];
+    self.captureStatusLabel.textColor = [UIColor redColor];
+}
+
 #pragma mark - Actions
 
 - (void)dismissView{
