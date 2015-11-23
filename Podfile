@@ -10,3 +10,5 @@ pod 'ChuzzleKit'
 
 # GUI
 pod 'Masonry'
+pod 'FontAwesomeKit/Core'
+pod 'FontAwesomeKit/IonIcons'

@@ -48,22 +48,23 @@
 {
     if ([[UIDevice currentDevice] proximityState] == NO){
         if (self.finishTimer.isValid) {
-            
             // set the capture status to cancelled since they decided not to wait long enough
             self.captureStatusLabel.text = @"CANCELLED";
             self.captureStatusLabel.textColor = [UIColor whiteColor];
         }else{
-            
             // reset for record mode since we recycle the view
             self.captureStatusLabel.text = @"";
             self.captureStatusLabel.textColor = [UIColor redColor];
         }
         
-        // fuck the timer though, that happens on view did appear
+        // fuck the timer though
         [self.finishTimer invalidate];
         
-        // dismiss cause f this view
-        [self performSelector:@selector(dismissView) withObject:nil afterDelay:0.6];
+        [self performSelector:@selector(dismissView) withObject:nil afterDelay:0.57];
+
+    }else{
+        self.captureStatusLabel.textColor = [UIColor redColor];
+        self.captureStatusLabel.text = @"RECORDING";
     }
 }
 
@@ -86,6 +87,7 @@
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     
+    [self.finishTimer invalidate];
     [self.captureStatusLabel setText:@"RECORDING"];
     self.captureStatusLabel.textColor = [UIColor redColor];
 }
