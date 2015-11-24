@@ -27,12 +27,22 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playbackFinished) name:MPMoviePlayerPlaybackDidFinishNotification object:nil];
 
         [self.view addSubview:self.moviePlayer.view];
+        
+        UISwipeGestureRecognizer *swipeDownGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(dismissVC)];
+        swipeDownGesture.direction = UISwipeGestureRecognizerDirectionDown;
+        [self.view addGestureRecognizer:swipeDownGesture];
+        
     }
     
     return self;
 }
 
 - (void)playbackFinished{
+    [self dismissVC];
+}
+
+- (void)dismissVC{
+    [self.moviePlayer stop];
     [self dismissViewControllerAnimated:NO completion:nil];
 }
 
