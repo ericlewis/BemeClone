@@ -96,6 +96,14 @@
     return cell;
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    if (section == 0) {
+        return @"FOLLOWING";
+    }
+    return @"YOU";
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
@@ -104,7 +112,11 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     if (section == 1) {
-        return self.myVideosArray.count;
+        
+        // you can only display your own vids once... in theory
+        if (self.myVideosArray.count > 0) {
+            return 1;
+        }
     }
     
     return self.othersVideosArray.count;
