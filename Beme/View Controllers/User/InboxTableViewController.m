@@ -109,7 +109,10 @@
     if (indexPath.section == 0) {
         // others
         NSDictionary *thing = [self.othersVideosArray objectAtIndex:indexPath.row];
-        NSLog(@"%@", thing);
+        PFFile *file = [thing valueForKey:@"video"];
+        
+        // show playback
+        [self presentViewController:[[PlaybackViewController alloc] initWithVideoURLString:file.url] animated:NO completion:nil];
     }else if (indexPath.section == 1){
         // you
         NSDictionary *thing = [self.myVideosArray objectAtIndex:indexPath.row];
