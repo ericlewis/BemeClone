@@ -19,6 +19,8 @@
 @interface InboxTableViewController () <CaptureViewControllerDelegate>
 @property (nonatomic, strong) CaptureViewController *captureVC;
 @property (nonatomic, strong) UIBarButtonItem *notificationBarButtonItem;
+@property (nonatomic, strong) NSArray *othersVideosArray;
+@property (nonatomic, strong) NSArray *myVideosArray;
 
 @end
 
@@ -40,6 +42,8 @@
     self.notificationBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"NO REACTIONS" style:UIBarButtonItemStylePlain target:self action:@selector(showReactionsVC)];
     self.notificationBarButtonItem.enabled = NO;
     [self.navigationItem setRightBarButtonItem:self.notificationBarButtonItem];
+    
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:NSStringFromClass([UITableViewCell class])];
 }
 
 #pragma mark - Lifecycle
@@ -53,6 +57,8 @@
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+    
+    [self retrieveVideos];
     
     // Set up an observer for proximity changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sensorStateChange:)
@@ -74,6 +80,36 @@
     }
 }
 
+#pragma mark - UITableViewDelegate
+
+- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([UITableViewCell class]) forIndexPath:indexPath];
+
+    if (indexPath.section == 0){
+        NSDictionary *videoFile = [self.othersVideosArray objectAtIndex:indexPath.row];
+        cell.textLabel.text = [videoFile valueForKey:@"senderName"];
+    }else{
+        NSDictionary *videoFile = [self.myVideosArray objectAtIndex:indexPath.row];
+        cell.textLabel.text = [videoFile valueForKey:@"senderName"];
+    }
+    
+    return cell;
+}
+
+#pragma mark - UITableViewDataSource
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    return 2;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    if (section == 1) {
+        return self.myVideosArray.count;
+    }
+    
+    return self.othersVideosArray.count;
+}
+
 #pragma mark - Actions
 
 - (void)showReactionsVC{
@@ -89,6 +125,36 @@
     BaseNavigationController *navVC = [[BaseNavigationController alloc] initWithRootViewController:accountVC];
     
     [self presentViewController:navVC animated:YES completion:nil];
+}
+
+#pragma mark - Helper methods
+
+- (void)retrieveVideos
+{
+    PFQuery *recipients = [PFQuery queryWithClassName:@"VideoObject"];
+    [recipients whereKey:@"recipientsIds" equalTo:[[PFUser currentUser] objectId]];
+    
+    PFQuery *sent = [PFQuery queryWithClassName:@"VideoObject"];
+    [sent whereKey:@"senderId" equalTo:[[PFUser currentUser] objectId]];
+    
+    PFQuery *query = [PFQuery orQueryWithSubqueries:@[recipients,sent]];
+    [query orderByDescending:@"createdAt"];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (error) {
+            NSLog(@"Error: %@ %@", error, error.userInfo);
+        } else {
+            NSPredicate *predicateForOthers = [NSPredicate predicateWithFormat:@"(senderId != %@)", [PFUser currentUser].objectId];
+            NSArray *filteredOthersArray = [objects filteredArrayUsingPredicate:predicateForOthers];
+            
+            NSPredicate *predicateForSelf = [NSPredicate predicateWithFormat:@"(senderId == %@)", [PFUser currentUser].objectId];
+            NSArray *filteredSelfArray = [objects filteredArrayUsingPredicate:predicateForSelf];
+
+            self.othersVideosArray = filteredOthersArray;
+            self.myVideosArray = filteredSelfArray;
+            
+            [self.tableView reloadData];
+        }
+    }];
 }
 
 #pragma mark - DGTCompletionViewController
@@ -110,10 +176,10 @@
             PFObject *videoObject = [PFObject objectWithClassName:@"VideoObject"];
             
             // these are who can see it.
-            [videoObject setObject:@[@"fuck", @"fuck"] forKey:@"recipientsIds"];
+            [videoObject setObject:@[[[PFUser currentUser] objectId]] forKey:@"recipientsIds"];
             
             // these are who have seen it
-            [videoObject setObject:@[@"fuck", @"fuck"] forKey:@"recipientsUnreadIds"];
+            [videoObject setObject:@[[[PFUser currentUser] objectId]] forKey:@"recipientsUnreadIds"];
             
             // our beautiful ID
             [videoObject setObject:[[PFUser currentUser] objectId] forKey:@"senderId"];
@@ -132,6 +198,7 @@
                     }
             }];
         }
+        
     } progressBlock:^(int percentDone) {
         NSLog(@"vid upload percent: %i", percentDone);
     }];
