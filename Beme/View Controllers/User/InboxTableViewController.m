@@ -40,12 +40,16 @@
     self.notificationBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"NO REACTIONS" style:UIBarButtonItemStylePlain target:self action:@selector(showReactionsVC)];
     self.notificationBarButtonItem.enabled = NO;
     [self.navigationItem setRightBarButtonItem:self.notificationBarButtonItem];
+}
+
+#pragma mark - Lifecycle
+
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     
     // Enabled monitoring of the sensor
     [[UIDevice currentDevice] setProximityMonitoringEnabled:YES];
 }
-
-#pragma mark - Lifecycle
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
