@@ -231,6 +231,10 @@
         
     } progressBlock:^(int percentDone) {
         NSLog(@"vid upload percent: %i", percentDone);
+        
+        if (percentDone == 100) {
+            [self performSelector:@selector(refreshData) withObject:nil afterDelay:1];
+        }
     }];
 }
 
