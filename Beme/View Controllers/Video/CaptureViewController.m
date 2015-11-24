@@ -148,7 +148,7 @@
 - (void)startCameraCapture
 {
     if ([self startVideoCapture]){
-        self.finishTimer = [NSTimer scheduledTimerWithTimeInterval:7 target:self selector:@selector(timerFinished) userInfo:nil repeats:NO];
+        self.finishTimer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(timerFinished) userInfo:nil repeats:NO];
         [self.videoRecordTimer invalidate];
     }
 }
