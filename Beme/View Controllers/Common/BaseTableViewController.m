@@ -35,6 +35,8 @@
 }
 
 - (void)commonInit{
+    self.refreshControl = [UIRefreshControl new];
+    [self.refreshControl addTarget:self action:@selector(refreshData) forControlEvents:UIControlEventValueChanged];
     [self setupBlankBackButton];
     [self.tableView setBackgroundColor:[UIColor commonBackgroundColor]];
     [self.tableView setTableFooterView:[UIView new]];
@@ -64,6 +66,12 @@
     if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
         [cell setLayoutMargins:UIEdgeInsetsZero];
     }
+}
+
+#pragma mark - User Stuff
+
+- (void)refreshData{
+    
 }
 
 @end

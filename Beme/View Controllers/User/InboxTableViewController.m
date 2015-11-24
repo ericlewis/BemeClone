@@ -104,6 +104,18 @@
     return @"YOU";
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if (indexPath.section == 0) {
+        // others
+        NSDictionary *thing = [self.othersVideosArray objectAtIndex:indexPath.row];
+        NSLog(@"%@", thing);
+    }else if (indexPath.section == 1){
+        // you
+        NSDictionary *thing = [self.myVideosArray objectAtIndex:indexPath.row];
+        NSLog(@"%@", thing);
+    }
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
@@ -146,18 +158,22 @@
     PFQuery *recipients = [PFQuery queryWithClassName:@"VideoObject"];
     [recipients whereKey:@"recipientsIds" equalTo:[[PFUser currentUser] objectId]];
     
-    PFQuery *sent = [PFQuery queryWithClassName:@"VideoObject"];
-    [sent whereKey:@"senderId" equalTo:[[PFUser currentUser] objectId]];
+    PFQuery *senderID = [PFQuery queryWithClassName:@"VideoObject"];
+    [senderID whereKey:@"senderId" equalTo:[[PFUser currentUser] objectId]];
     
-    PFQuery *query = [PFQuery orQueryWithSubqueries:@[recipients,sent]];
+    PFQuery *query = [PFQuery orQueryWithSubqueries:@[recipients, senderID]];
     [query orderByDescending:@"createdAt"];
+    
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (error) {
             NSLog(@"Error: %@ %@", error, error.userInfo);
         } else {
+            
+            // our followerers.
             NSPredicate *predicateForOthers = [NSPredicate predicateWithFormat:@"(senderId != %@)", [PFUser currentUser].objectId];
             NSArray *filteredOthersArray = [objects filteredArrayUsingPredicate:predicateForOthers];
             
+            // the video we recorededded
             NSPredicate *predicateForSelf = [NSPredicate predicateWithFormat:@"(senderId == %@)", [PFUser currentUser].objectId];
             NSArray *filteredSelfArray = [objects filteredArrayUsingPredicate:predicateForSelf];
 
@@ -166,6 +182,8 @@
             
             [self.tableView reloadData];
         }
+        
+        [self.refreshControl endRefreshing];
     }];
 }
 
@@ -214,6 +232,10 @@
     } progressBlock:^(int percentDone) {
         NSLog(@"vid upload percent: %i", percentDone);
     }];
+}
+
+- (void)refreshData{
+    [self retrieveVideos];
 }
 
 @end
