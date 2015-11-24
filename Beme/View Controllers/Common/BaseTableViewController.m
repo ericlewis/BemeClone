@@ -35,9 +35,6 @@
 }
 
 - (void)commonInit{
-    self.refreshControl = [UIRefreshControl new];
-    [self.refreshControl addTarget:self action:@selector(refreshData) forControlEvents:UIControlEventValueChanged];
-    [self setupBlankBackButton];
     [self.tableView setBackgroundColor:[UIColor commonBackgroundColor]];
     [self.tableView setTableFooterView:[UIView new]];
     
@@ -48,6 +45,12 @@
         make.centerX.equalTo(self.tableView);
         make.centerY.equalTo(self.tableView).with.offset(-40);
     }];
+}
+
+- (void)setupRefreshControl{
+    self.refreshControl = [UIRefreshControl new];
+    [self.refreshControl addTarget:self action:@selector(refreshData) forControlEvents:UIControlEventValueChanged];
+    [self setupBlankBackButton];
 }
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath

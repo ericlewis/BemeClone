@@ -12,6 +12,7 @@
 @interface BaseTableViewController : UITableViewController
 
 - (void)commonInit;
+- (void)setupRefreshControl;
 - (void)refreshData;
 
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicatorView;

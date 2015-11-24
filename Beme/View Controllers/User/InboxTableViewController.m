@@ -30,6 +30,8 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
     
+    [self setupRefreshControl];
+    
     self.captureVC = [CaptureViewController new];
     self.captureVC.secondaryDelegate = self;
     
