@@ -100,23 +100,33 @@
 #pragma mark - CaptureViewControllerDelegate
 
 - (void)tookVideo:(NSURL*)outputURL withFilename:(NSString*)name{
-    /* save to camera roll - dev only really for now.
-     NSString *moviePath = [session.outputURL path];
-     
-     if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum (moviePath))
-     {
-     UISaveVideoAtPathToSavedPhotosAlbum (moviePath, nil, nil, nil);
-     }*/
-    
     NSData *imageData = [NSData dataWithContentsOfURL:outputURL];
     PFFile *videofile = [PFFile fileWithName:name data:imageData];
 
     [videofile saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if (succeeded && !error) {
-            PFObject* newPhotoObject = [PFObject objectWithClassName:@"VideoObject"];
-            [newPhotoObject setObject:videofile forKey:@"video"];
+            // video object
+            PFObject *videoObject = [PFObject objectWithClassName:@"VideoObject"];
+            
+            // we own it
+            [videoObject setValue:[PFUser currentUser].username forKey:@"owner"];
+            
+            // these are who can see it.
+            [videoObject setObject:@[@"fuck", @"fuck"] forKey:@"recipientsIds"];
+            
+            // these are who have seen it
+            [videoObject setObject:@[@"fuck", @"fuck"] forKey:@"recipientsUnreadIds"];
+            
+            // our beautiful ID
+            [videoObject setObject:[[PFUser currentUser] objectId] forKey:@"senderId"];
+            
+            // our pretty name
+            [videoObject setObject:[[PFUser currentUser] username] forKey:@"senderName"];
+        
+            // this is the actual video...
+            [videoObject setObject:videofile forKey:@"video"];
 
-            [newPhotoObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            [videoObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                     if (!error) {
                     } else{
                     // Error
