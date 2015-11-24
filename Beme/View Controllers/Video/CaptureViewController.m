@@ -102,7 +102,7 @@
     
     // schedule a timer to keep tracking of video length
     self.videoIsLongEnough = NO;
-    self.videoRecordTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(startCameraCapture) userInfo:nil repeats:YES];
+    self.videoRecordTimer = [NSTimer scheduledTimerWithTimeInterval:0.75 target:self selector:@selector(startCameraCapture) userInfo:nil repeats:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
