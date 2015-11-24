@@ -105,11 +105,9 @@
 
     [videofile saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if (succeeded && !error) {
+            
             // video object
             PFObject *videoObject = [PFObject objectWithClassName:@"VideoObject"];
-            
-            // we own it
-            [videoObject setValue:[PFUser currentUser].username forKey:@"owner"];
             
             // these are who can see it.
             [videoObject setObject:@[@"fuck", @"fuck"] forKey:@"recipientsIds"];
