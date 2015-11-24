@@ -208,8 +208,17 @@
     NSData *imageData = [NSData dataWithContentsOfURL:outputURL];
     PFFile *videofile = [PFFile fileWithName:name data:imageData];
 
+    UIView *uploadHeader = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), 50)];
+    UIActivityIndicatorView *activitiyIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [uploadHeader addSubview:activitiyIndicatorView];
+    [activitiyIndicatorView setCenter:uploadHeader.center];
+    [activitiyIndicatorView startAnimating];
+    
+    self.tableView.tableHeaderView = uploadHeader;
+
     [videofile saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if (succeeded && !error) {
+            
             
             // video object
             PFObject *videoObject = [PFObject objectWithClassName:@"VideoObject"];
@@ -242,8 +251,10 @@
         NSLog(@"vid upload percent: %i", percentDone);
         
         if (percentDone == 100) {
+            self.tableView.tableHeaderView = nil;
             [self performSelector:@selector(refreshData) withObject:nil afterDelay:1];
         }
+        
     }];
 }
 
