@@ -49,8 +49,7 @@
             [background addSubview:self.captureStatusLabel];
             
             [self.captureStatusLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.top.equalTo(self.mas_topLayoutGuideBottom);
-                make.right.left.equalTo(background);
+                make.center.equalTo(background);
             }];
         }
     }
