@@ -13,6 +13,7 @@
 #import "BaseNavigationController.h"
 #import "AccountTableViewController.h"
 #import "CaptureViewController.h"
+#import "PlaybackViewController.h"
 
 #import "FontAwesomeKit/FAKIonIcons.h"
 
@@ -112,7 +113,10 @@
     }else if (indexPath.section == 1){
         // you
         NSDictionary *thing = [self.myVideosArray objectAtIndex:indexPath.row];
-        NSLog(@"%@", thing);
+        PFFile *file = [thing valueForKey:@"video"];
+        
+        // show playback
+        [self presentViewController:[[PlaybackViewController alloc] initWithVideoURLString:file.url] animated:NO completion:nil];
     }
 }
 
