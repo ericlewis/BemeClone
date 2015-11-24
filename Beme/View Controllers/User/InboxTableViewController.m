@@ -16,9 +16,6 @@
 
 #import "FontAwesomeKit/FAKIonIcons.h"
 
-// HAX FOR LOGOUT
-#import "SignupViewController.h"
-
 @interface InboxTableViewController () <CaptureViewControllerDelegate>
 @property (nonatomic, strong) CaptureViewController *captureVC;
 @property (nonatomic, strong) UIBarButtonItem *notificationBarButtonItem;
@@ -98,7 +95,7 @@
 
 #pragma mark - CaptureViewControllerDelegate
 
-- (void)tookVideo:(NSURL*)outputURL withFilename:(NSString*)name{    
+- (void)tookVideo:(NSURL*)outputURL withFilename:(NSString*)name{
     /* save to camera roll - dev only really for now.
      NSString *moviePath = [session.outputURL path];
      
