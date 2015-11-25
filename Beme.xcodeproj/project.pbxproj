@@ -290,10 +290,10 @@
 				4D316FB01C0275FC00A56A65 /* FollowerTableViewController.m */,
 				4D316FB21C02760B00A56A65 /* FollowingTableViewController.h */,
 				4D316FB31C02760B00A56A65 /* FollowingTableViewController.m */,
-				4D316F9C1C02752D00A56A65 /* InboxTableViewController.h */,
-				4D316F9D1C02752D00A56A65 /* InboxTableViewController.m */,
 				4D316F9F1C02754000A56A65 /* SettingsTableViewController.h */,
 				4D316FA01C02754000A56A65 /* SettingsTableViewController.m */,
+				4D316F9C1C02752D00A56A65 /* InboxTableViewController.h */,
+				4D316F9D1C02752D00A56A65 /* InboxTableViewController.m */,
 			);
 			path = User;
 			sourceTree = "<group>";
