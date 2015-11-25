@@ -23,6 +23,9 @@
 @property (nonatomic, strong) NSArray *othersVideosArray;
 @property (nonatomic, strong) NSArray *myVideosArray;
 
+@property (nonatomic, strong) NSArray *friends;
+@property (nonatomic, strong) PFRelation *friendsRelation;
+
 @end
 
 @implementation InboxTableViewController
@@ -46,7 +49,7 @@
     self.notificationBarButtonItem.enabled = NO;
     [self.navigationItem setRightBarButtonItem:self.notificationBarButtonItem];
     
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:NSStringFromClass([UITableViewCell class])];
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:NSStringFromClass([UITableViewCell class])];    
 }
 
 #pragma mark - Lifecycle
@@ -62,7 +65,8 @@
     [super viewDidAppear:animated];
     
     [self retrieveVideos];
-    
+    [self loadFriends];
+
     // Set up an observer for proximity changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sensorStateChange:)
                                                  name:@"UIDeviceProximityStateDidChangeNotification" object:nil];    
@@ -128,6 +132,10 @@
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    if (self.myVideosArray.count == 0) {
+        return 1;
+    }
+    
     return 2;
 }
 
@@ -196,6 +204,30 @@
     }];
 }
 
+
+- (void)loadFriends{
+    // add ourself.
+    NSMutableArray *mutableFriends = [[NSMutableArray alloc] initWithArray:@[[[PFUser currentUser] objectId]]];
+    self.friends = mutableFriends;
+    
+    self.friendsRelation = [[PFUser currentUser] objectForKey:@"friendsRelation"];
+    
+    PFQuery *query = [self.friendsRelation query];
+    [query whereKey:@"objectId" notEqualTo:[[PFUser currentUser] objectId]];
+    [query orderByAscending:@"username"];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *friends, NSError *error) {
+        if (error) {
+            NSLog(@"Error: %@ %@", error, error.userInfo);
+        } else {
+            for (PFUser *friend in friends) {
+                [mutableFriends addObject:friend.objectId];
+            }
+            
+            self.friends = mutableFriends;
+        }
+    }];
+}
+
 #pragma mark - DGTCompletionViewController
 
 - (void)digitsAuthenticationFinishedWithSession:(DGTSession *)session error:(NSError *)error{
@@ -219,15 +251,14 @@
     [videofile saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if (succeeded && !error) {
             
-            
             // video object
             PFObject *videoObject = [PFObject objectWithClassName:@"VideoObject"];
             
             // these are who can see it.
-            [videoObject setObject:@[[[PFUser currentUser] objectId]] forKey:@"recipientsIds"];
+            [videoObject setObject:self.friends forKey:@"recipientsIds"];
             
             // these are who have seen it
-            [videoObject setObject:@[[[PFUser currentUser] objectId]] forKey:@"recipientsUnreadIds"];
+            [videoObject setObject:self.friends forKey:@"recipientsUnreadIds"];
             
             // our beautiful ID
             [videoObject setObject:[[PFUser currentUser] objectId] forKey:@"senderId"];
