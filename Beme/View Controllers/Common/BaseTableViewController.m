@@ -45,6 +45,8 @@
         make.centerX.equalTo(self.tableView);
         make.centerY.equalTo(self.tableView).with.offset(-40);
     }];
+    
+    [self setupBlankBackButton];
 }
 
 - (void)setupRefreshControl{
