@@ -12,6 +12,8 @@
 
 @interface FindFriendsTableViewController ()
 @property (nonatomic, strong) NSArray *allUsers;
+@property (nonatomic, strong) NSArray *friends;
+@property (nonatomic, strong) PFRelation *friendsRelation;
 @end
 
 @implementation FindFriendsTableViewController
@@ -27,13 +29,16 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
     
+    self.friendsRelation = [[PFUser currentUser] objectForKey:@"friendsRelation"];
+
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:NSStringFromClass([UITableViewCell class])];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
-    [self loadPeople];
+    [self loadFriends];
+    [self loadEveryone];
 }
 
 #pragma mark - UITableViewDelegate
@@ -50,14 +55,22 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     PFUser *user = [self.allUsers objectAtIndex:indexPath.row];
-    PFRelation *friendsRelation = [[PFUser currentUser] relationForKey:@"friendsRelation"];
     
-    [friendsRelation addObject:user];
-
+    if ([self isFriend:user]) {
+        [self.friendsRelation removeObject:user];
+        NSLog(@"friend!");
+    }else{
+        [self.friendsRelation addObject:user];
+        NSLog(@"not friend!");
+    }
+    
     [[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (error) {
             NSLog(@"Error: %@ %@", error, error.userInfo);
         }
+        
+        [self loadFriends];
+        [self loadEveryone];
     }];
 }
 
@@ -70,7 +83,7 @@
 #pragma mark - Helpers
 
 - (BOOL)isFriend:(PFUser *)user{
-    for (PFUser *friend in self.allUsers) {
+    for (PFUser *friend in self.friends) {
         if ([friend.objectId isEqualToString:user.objectId]) {
             return YES;
         }
@@ -78,7 +91,7 @@
     return NO;
 }
 
-- (void)loadPeople{
+- (void)loadEveryone{
     PFQuery *query = [PFUser query];
     [query orderByAscending:@"username"];
     [query whereKey:@"objectId" notEqualTo:[[PFUser currentUser] objectId]];
@@ -87,6 +100,21 @@
             NSLog(@"Error: %@ %@", error, error.userInfo);
         } else {
             self.allUsers = objects;
+            [self.tableView reloadData];
+        }
+    }];
+}
+
+- (void)loadFriends{
+    PFQuery *query = [self.friendsRelation query];
+    [query whereKey:@"objectId" notEqualTo:[[PFUser currentUser] objectId]];
+    [query orderByAscending:@"username"];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (error) {
+            NSLog(@"Error: %@ %@", error, error.userInfo);
+        } else {
+            self.friends = objects;
+            NSLog(@"%@", self.friends);
             [self.tableView reloadData];
         }
     }];
