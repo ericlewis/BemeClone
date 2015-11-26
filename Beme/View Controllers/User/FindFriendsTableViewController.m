@@ -7,8 +7,7 @@
 //
 
 #import "FindFriendsTableViewController.h"
-
-#import <Parse/Parse.h>
+#import "Utility.h"
 
 @interface FindFriendsTableViewController ()
 @property (nonatomic, strong) NSArray *allUsers;
@@ -54,6 +53,12 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    PFUser *user = [self.allUsers objectAtIndex:indexPath.row];
+    
+    [Utility followUserInBackground:user block:^(BOOL succeeded, NSError *error) {
+        NSLog(@"%@", error);
+    }];
     
     // Activity
     // create an activity, this can be following others, posting a video, creating a reaction

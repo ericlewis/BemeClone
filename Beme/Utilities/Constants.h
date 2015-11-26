@@ -8,7 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-#pragma mark - PFObject Activity Class
+#pragma mark - Activity Class
+
 // Class key
 extern NSString *const kActivityClassKey;
 
@@ -22,4 +23,10 @@ extern NSString *const kActivityVideoKey;
 // Type values
 extern NSString *const kActivityTypeFollow;
 extern NSString *const kActivityTypeReaction;
+extern NSString *const kActivityTypeWatched;
 extern NSString *const kActivityTypeJoined;
+
+#pragma mark - Cached User Attributes
+
+// Keys
+extern NSString *const kUserAttributesIsFollowedByCurrentUserKey;

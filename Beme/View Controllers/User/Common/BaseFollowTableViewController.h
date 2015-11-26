@@ -7,6 +7,7 @@
 //
 
 #import "Utility.h"
+#import "Cache.h"
 #import <ParseUI/ParseUI.h>
 
 @interface BaseFollowTableViewController : PFQueryTableViewController

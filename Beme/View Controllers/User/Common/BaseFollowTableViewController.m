@@ -19,6 +19,7 @@
     if (self = [super init]) {
         self.parseClassName = kActivityClassKey;
         self.pullToRefreshEnabled = YES;
+        self.loadingViewEnabled = NO;
     }
     
     return self;
@@ -27,6 +28,7 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
     
+    self.tableView.tableFooterView = [UIView new];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:NSStringFromClass([UITableViewCell class])];
 }
 
@@ -38,37 +40,22 @@
 
 #pragma mark - UITableViewDelegate
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath object:(PFObject *)object {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([UITableViewCell class])];
-    return cell;
-    /*NSUInteger index = [self indexForObjectAtIndexPath:indexPath];
+-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // Remove seperator inset
+    if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
+        [cell setSeparatorInset:UIEdgeInsetsZero];
+    }
     
-    if (indexPath.row % 2 == 0) {
-        // Header
-        return [self detailPhotoCellForRowAtIndexPath:indexPath];
-    } else {
-        // Photo
-        PAPPhotoCell *cell = (PAPPhotoCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        
-        if (cell == nil) {
-            cell = [[PAPPhotoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-            [cell.photoButton addTarget:self action:@selector(didTapOnPhotoAction:) forControlEvents:UIControlEventTouchUpInside];
-        }
-        
-        cell.photoButton.tag = index;
-        cell.imageView.image = [UIImage imageNamed:@"PlaceholderPhoto.png"];
-        
-        if (object) {
-            cell.imageView.file = [object objectForKey:kPAPPhotoPictureKey];
-            
-            // PFQTVC will take care of asynchronously downloading files, but will only load them when the tableview is not moving. If the data is there, let's load it right away.
-            if ([cell.imageView.file isDataAvailable]) {
-                [cell.imageView loadInBackground];
-            }
-        }
-        
-        return cell;
-    }*/
+    // Prevent the cell from inheriting the Table View's margin settings
+    if ([cell respondsToSelector:@selector(setPreservesSuperviewLayoutMargins:)]) {
+        [cell setPreservesSuperviewLayoutMargins:NO];
+    }
+    
+    // Explictly set your cell's layout margins
+    if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
+        [cell setLayoutMargins:UIEdgeInsetsZero];
+    }
 }
 
 @end

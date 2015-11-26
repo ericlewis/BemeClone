@@ -9,6 +9,7 @@
 #import "Constants.h"
 
 #pragma mark - Activity Class
+
 // Class key
 NSString *const kActivityClassKey = @"Activity";
 
@@ -22,4 +23,10 @@ NSString *const kActivityVideoKey       = @"video";
 // Type values
 NSString *const kActivityTypeFollow     = @"follow";
 NSString *const kActivityTypeReaction   = @"reaction";
+NSString *const kActivityTypeWatched    = @"watched";
 NSString *const kActivityTypeJoined     = @"joined";
+
+#pragma mark - Cached User Attributes
+
+// keys
+NSString *const kUserAttributesIsFollowedByCurrentUserKey = @"isFollowedByCurrentUser";
