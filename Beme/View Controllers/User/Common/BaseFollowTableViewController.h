@@ -10,6 +10,8 @@
 #import "Cache.h"
 #import <ParseUI/ParseUI.h>
 
+#import "UserFollowCell.h"
+
 @interface BaseFollowTableViewController : PFQueryTableViewController
 
 @end

@@ -29,7 +29,7 @@
     [super viewDidLoad];
     
     self.tableView.tableFooterView = [UIView new];
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:NSStringFromClass([UITableViewCell class])];
+    [self.tableView registerClass:[UserFollowCell class] forCellReuseIdentifier:NSStringFromClass([UserFollowCell class])];
 }
 
 #pragma mark - UITableViewDataSource

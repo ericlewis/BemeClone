@@ -38,6 +38,7 @@
 		4D5C15EE1C067B67009ACBA8 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D5C15ED1C067B67009ACBA8 /* Constants.m */; };
 		4D5C15F11C0683BC009ACBA8 /* Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D5C15F01C0683BC009ACBA8 /* Utility.m */; };
 		4D5C15F41C06CF56009ACBA8 /* Cache.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D5C15F31C06CF56009ACBA8 /* Cache.m */; };
+		4D5C15F71C06D9B9009ACBA8 /* UserFollowCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D5C15F61C06D9B9009ACBA8 /* UserFollowCell.m */; };
 		4D8FAEF51C029F1E00756DBF /* PFUser+Digits.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8FAEF41C029F1E00756DBF /* PFUser+Digits.m */; };
 		4D8FAEF81C02AF2F00756DBF /* BaseLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8FAEF71C02AF2F00756DBF /* BaseLabel.m */; };
 /* End PBXBuildFile section */
@@ -104,6 +105,8 @@
 		4D5C15F01C0683BC009ACBA8 /* Utility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utility.m; sourceTree = "<group>"; };
 		4D5C15F21C06CF56009ACBA8 /* Cache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cache.h; sourceTree = "<group>"; };
 		4D5C15F31C06CF56009ACBA8 /* Cache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Cache.m; sourceTree = "<group>"; };
+		4D5C15F51C06D9B9009ACBA8 /* UserFollowCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserFollowCell.h; sourceTree = "<group>"; };
+		4D5C15F61C06D9B9009ACBA8 /* UserFollowCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserFollowCell.m; sourceTree = "<group>"; };
 		4D8FAEF31C029F1E00756DBF /* PFUser+Digits.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PFUser+Digits.h"; path = "Vendor/PFUser-Digits/PFUser+Digits.h"; sourceTree = SOURCE_ROOT; };
 		4D8FAEF41C029F1E00756DBF /* PFUser+Digits.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "PFUser+Digits.m"; path = "Vendor/PFUser-Digits/PFUser+Digits.m"; sourceTree = SOURCE_ROOT; };
 		4D8FAEF61C02AF2F00756DBF /* BaseLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseLabel.h; sourceTree = "<group>"; };
@@ -336,6 +339,8 @@
 		4D316FB71C02769C00A56A65 /* User */ = {
 			isa = PBXGroup;
 			children = (
+				4D5C15F51C06D9B9009ACBA8 /* UserFollowCell.h */,
+				4D5C15F61C06D9B9009ACBA8 /* UserFollowCell.m */,
 			);
 			path = User;
 			sourceTree = "<group>";
@@ -517,6 +522,7 @@
 				4D316F601C025C8D00A56A65 /* BaseTableViewController.m in Sources */,
 				4D316F681C025D5B00A56A65 /* SignupViewController.m in Sources */,
 				4D5140871C027E2D00476D02 /* NSUserDefaults+Additions.m in Sources */,
+				4D5C15F71C06D9B9009ACBA8 /* UserFollowCell.m in Sources */,
 				4D316FB11C0275FC00A56A65 /* FollowerTableViewController.m in Sources */,
 				4D316FAD1C0275E400A56A65 /* BaseFollowTableViewController.m in Sources */,
 				4D316FA41C02754E00A56A65 /* AccountTableViewController.m in Sources */,
