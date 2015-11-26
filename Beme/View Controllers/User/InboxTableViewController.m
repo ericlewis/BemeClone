@@ -17,6 +17,8 @@
 
 #import "FontAwesomeKit/FAKIonIcons.h"
 
+#import "Constants.h"
+
 @interface InboxTableViewController () <CaptureViewControllerDelegate>
 @property (nonatomic, strong) CaptureViewController *captureVC;
 @property (nonatomic, strong) UIBarButtonItem *notificationBarButtonItem;
@@ -24,6 +26,8 @@
 
 @property (nonatomic, strong) NSArray *friends;
 @property (nonatomic, strong) PFRelation *friendsRelation;
+
+@property (nonatomic, assign) UIBackgroundTaskIdentifier videoPostBackgroundTaskId;
 
 @end
 
@@ -200,9 +204,6 @@
 #pragma mark - CaptureViewControllerDelegate
 
 - (void)tookVideo:(NSURL*)outputURL withFilename:(NSString*)name{
-    NSData *imageData = [NSData dataWithContentsOfURL:outputURL];
-    PFFile *videofile = [PFFile fileWithName:name data:imageData];
-
     UIView *uploadHeader = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), 50)];
     UIActivityIndicatorView *activitiyIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     [uploadHeader addSubview:activitiyIndicatorView];
@@ -210,45 +211,34 @@
     [activitiyIndicatorView startAnimating];
     
     self.tableView.tableHeaderView = uploadHeader;
+    
+    NSData *videoData = [NSData dataWithContentsOfURL:outputURL];
+    PFFile *videofile = [PFFile fileWithName:name data:videoData];
+    
+    // create a video object
+    PFObject *video = [PFObject objectWithClassName:kVideoClassKey];
+    [video setObject:[PFUser currentUser] forKey:kVideoUserKey];
+    [video setObject:videofile forKey:kVideoFileKey];
+    
+    // videos are public, but may only be modified by the user who uploaded it
+    PFACL *videoACL = [PFACL ACLWithUser:[PFUser currentUser]];
+    [videoACL setPublicReadAccess:YES];
+    video.ACL = videoACL;
+    
+    // Request a background execution task to allow us to finish uploading the video even if the app is backgrounded
+    self.videoPostBackgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        [[UIApplication sharedApplication] endBackgroundTask:self.videoPostBackgroundTaskId];
+    }];
 
-    [videofile saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        if (succeeded && !error) {
-            
-            // video object
-            PFObject *videoObject = [PFObject objectWithClassName:@"VideoObject"];
-            
-            // these are who can see it.
-            [videoObject setObject:self.friends forKey:@"recipientsIds"];
-            
-            // these are who have seen it
-            [videoObject setObject:self.friends forKey:@"recipientsUnreadIds"];
-            
-            // our beautiful ID
-            [videoObject setObject:[[PFUser currentUser] objectId] forKey:@"senderId"];
-            
-            // our pretty name
-            [videoObject setObject:[[PFUser currentUser] username] forKey:@"senderName"];
-        
-            // this is the actual video...
-            [videoObject setObject:videofile forKey:@"video"];
-
-            [videoObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                    if (!error) {
-                    } else{
-                    // Error
-                        NSLog(@"Error: %@ %@", error, [error userInfo]);
-                    }
-            }];
+    [video saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error){
+        if (error) {
+            NSLog(@"%@", error);
         }
         
-    } progressBlock:^(int percentDone) {
-        NSLog(@"vid upload percent: %i", percentDone);
+        [[UIApplication sharedApplication] endBackgroundTask:self.videoPostBackgroundTaskId];
         
-        if (percentDone == 100) {
-            self.tableView.tableHeaderView = nil;
-            [self performSelector:@selector(refreshData) withObject:nil afterDelay:1];
-        }
-        
+        self.tableView.tableHeaderView = nil;
+        [self performSelector:@selector(refreshData) withObject:nil afterDelay:1];
     }];
 }
 

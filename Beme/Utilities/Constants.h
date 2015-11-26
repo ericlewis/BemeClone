@@ -26,6 +26,15 @@ extern NSString *const kActivityTypeReaction;
 extern NSString *const kActivityTypeWatched;
 extern NSString *const kActivityTypeJoined;
 
+#pragma mark - Video Class
+
+// Class key
+extern NSString *const kVideoClassKey;
+
+// Field keys
+extern NSString *const kVideoFileKey;
+extern NSString *const kVideoUserKey;
+
 #pragma mark - Cached User Attributes
 
 // Keys
