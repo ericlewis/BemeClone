@@ -14,11 +14,14 @@
 
 @implementation FollowerTableViewController
 
-- (void)commonInit{
-    [super commonInit];
+- (void)viewDidLoad{
+    [super viewDidLoad];
     
     self.title = @"RECENT FOLLOWERS";
-    
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];    
 }
 
 @end

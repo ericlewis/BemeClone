@@ -6,8 +6,9 @@
 //  Copyright © 2015 Eric Lewis. All rights reserved.
 //
 
-#import "BaseTableViewController.h"
+#import "Utility.h"
+#import <ParseUI/ParseUI.h>
 
-@interface BaseFollowTableViewController : BaseTableViewController
+@interface BaseFollowTableViewController : PFQueryTableViewController
 
 @end

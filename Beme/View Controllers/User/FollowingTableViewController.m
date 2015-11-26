@@ -14,11 +14,10 @@
 
 @implementation FollowingTableViewController
 
-- (void)commonInit{
-    [super commonInit];
+- (void)viewDidLoad{
+    [super viewDidLoad];
     
     self.title = @"FOLLOWING";
-    
 }
 
 @end

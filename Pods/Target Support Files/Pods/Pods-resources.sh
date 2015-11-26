@@ -62,12 +62,14 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_resource "FontAwesomeKit/FontAwesomeKit/ionicons.ttf"
   install_resource "NSDate+TimeAgo/NSDateTimeAgo.bundle"
   install_resource "Parse/Parse/Resources/en.lproj"
+  install_resource "ParseUI/ParseUI/Resources/Localization/en.lproj"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_resource "Digits/DigitsKit.framework/Versions/A/Resources/DigitsKitResources.bundle"
   install_resource "FontAwesomeKit/FontAwesomeKit/ionicons.ttf"
   install_resource "NSDate+TimeAgo/NSDateTimeAgo.bundle"
   install_resource "Parse/Parse/Resources/en.lproj"
+  install_resource "ParseUI/ParseUI/Resources/Localization/en.lproj"
 fi
 
 mkdir -p "${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"

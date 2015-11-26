@@ -37,6 +37,7 @@
 - (void)commonInit{
     [self setupBlankBackButton];
     [self.view setBackgroundColor:[UIColor commonBackgroundColor]];
+    [[UIDevice currentDevice] setProximityMonitoringEnabled:NO];
 }
 
 - (void)viewDidLoad{

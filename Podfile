@@ -2,6 +2,7 @@ platform :ios, '8.0'
 
 # utilities
 pod 'Parse'
+pod 'ParseUI'
 pod 'NSDate+TimeAgo', :git => 'https://github.com/ericlewis/NSDate-TimeAgo.git'
 pod 'Fabric'
 pod 'Crashlytics'

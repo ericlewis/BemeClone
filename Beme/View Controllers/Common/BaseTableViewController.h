@@ -6,7 +6,7 @@
 //  Copyright © 2015 Eric Lewis. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <ParseUI/ParseUI.h>
 #import "CommonViewHeaders.h"
 
 @interface BaseTableViewController : UITableViewController

@@ -20,7 +20,6 @@
 @interface InboxTableViewController () <CaptureViewControllerDelegate>
 @property (nonatomic, strong) CaptureViewController *captureVC;
 @property (nonatomic, strong) UIBarButtonItem *notificationBarButtonItem;
-@property (nonatomic, strong) NSArray *othersVideosArray;
 @property (nonatomic, strong) NSArray *myVideosArray;
 
 @property (nonatomic, strong) NSArray *friends;
@@ -34,9 +33,6 @@
     [super viewDidLoad];
     
     [self setupRefreshControl];
-    
-    self.captureVC = [CaptureViewController new];
-    self.captureVC.secondaryDelegate = self;
     
     // HAX for when we come from login, since its kind of weird.
     self.navigationItem.hidesBackButton = YES;
@@ -56,9 +52,17 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    
-    // Enabled monitoring of the sensor
-    [[UIDevice currentDevice] setProximityMonitoringEnabled:YES];
+
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]){
+        
+        // Enabled monitoring of the sensor
+        [[UIDevice currentDevice] setProximityMonitoringEnabled:YES];
+        
+        if (!self.captureVC) {
+            self.captureVC = [CaptureViewController new];
+            self.captureVC.secondaryDelegate = self;
+        }
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -92,63 +96,29 @@
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([UITableViewCell class]) forIndexPath:indexPath];
 
-    if (indexPath.section == 0){
-        NSDictionary *videoFile = [self.othersVideosArray objectAtIndex:indexPath.row];
-        cell.textLabel.text = [videoFile valueForKey:@"senderName"];
-    }else{
-        NSDictionary *videoFile = [self.myVideosArray objectAtIndex:indexPath.row];
-        cell.textLabel.text = [videoFile valueForKey:@"senderName"];
-    }
+    NSDictionary *videoFile = [self.myVideosArray objectAtIndex:indexPath.row];
+    cell.textLabel.text = [videoFile valueForKey:@"senderName"];
     
     return cell;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    if (section == 0) {
-        return @"FOLLOWING";
-    }
-    return @"YOU";
+    return @"FOLLOWING";
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    if (indexPath.section == 0) {
-        // others
-        NSDictionary *thing = [self.othersVideosArray objectAtIndex:indexPath.row];
-        PFFile *file = [thing valueForKey:@"video"];
-        
-        // show playback
-        [self presentViewController:[[PlaybackViewController alloc] initWithVideoURLString:file.url] animated:NO completion:nil];
-    }else if (indexPath.section == 1){
-        // you
-        NSDictionary *thing = [self.myVideosArray objectAtIndex:indexPath.row];
-        PFFile *file = [thing valueForKey:@"video"];
-        
-        // show playback
-        [self presentViewController:[[PlaybackViewController alloc] initWithVideoURLString:file.url] animated:NO completion:nil];
-    }
+    NSDictionary *thing = [self.myVideosArray objectAtIndex:indexPath.row];
+    PFFile *file = [thing valueForKey:@"video"];
+    
+    // show playback
+    [self presentViewController:[[PlaybackViewController alloc] initWithVideoURLString:file.url] animated:NO completion:nil];
 }
 
 #pragma mark - UITableViewDataSource
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    if (self.myVideosArray.count == 0) {
-        return 1;
-    }
-    
-    return 2;
-}
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    if (section == 1) {
-        
-        // you can only display your own vids once... in theory
-        if (self.myVideosArray.count > 0) {
-            return 1;
-        }
-    }
-    
-    return self.othersVideosArray.count;
+    return self.myVideosArray.count;
 }
 
 #pragma mark - Actions
@@ -185,17 +155,8 @@
         if (error) {
             NSLog(@"Error: %@ %@", error, error.userInfo);
         } else {
-            
-            // our followerers.
-            NSPredicate *predicateForOthers = [NSPredicate predicateWithFormat:@"(senderId != %@)", [PFUser currentUser].objectId];
-            NSArray *filteredOthersArray = [objects filteredArrayUsingPredicate:predicateForOthers];
-            
-            // the video we recorededded
-            NSPredicate *predicateForSelf = [NSPredicate predicateWithFormat:@"(senderId == %@)", [PFUser currentUser].objectId];
-            NSArray *filteredSelfArray = [objects filteredArrayUsingPredicate:predicateForSelf];
-
-            self.othersVideosArray = filteredOthersArray;
-            self.myVideosArray = filteredSelfArray;
+        
+            self.myVideosArray = objects;
             
             [self.tableView reloadData];
         }

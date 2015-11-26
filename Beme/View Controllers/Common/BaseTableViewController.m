@@ -47,6 +47,9 @@
     }];
     
     [self setupBlankBackButton];
+    
+    // Enabled monitoring of the sensor
+    [[UIDevice currentDevice] setProximityMonitoringEnabled:NO];
 }
 
 - (void)setupRefreshControl{

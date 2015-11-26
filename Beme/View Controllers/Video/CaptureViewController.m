@@ -28,6 +28,8 @@
 
 - (instancetype)init{
     if (self = [super init]) {
+        [[UIDevice currentDevice] setProximityMonitoringEnabled:YES];
+        
         self.view.backgroundColor = [UIColor blackColor];
         self.delegate = self;
         self.sourceType = UIImagePickerControllerSourceTypeCamera;
@@ -102,7 +104,7 @@
     
     // schedule a timer to keep tracking of video length
     self.videoIsLongEnough = NO;
-    self.videoRecordTimer = [NSTimer scheduledTimerWithTimeInterval:0.75 target:self selector:@selector(startCameraCapture) userInfo:nil repeats:YES];
+    self.videoRecordTimer = [NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(startCameraCapture) userInfo:nil repeats:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
@@ -147,7 +149,7 @@
 - (void)startCameraCapture
 {
     if ([self startVideoCapture]){
-        self.finishTimer = [NSTimer scheduledTimerWithTimeInterval:6 target:self selector:@selector(timerFinished) userInfo:nil repeats:NO];
+        self.finishTimer = [NSTimer scheduledTimerWithTimeInterval:4 target:self selector:@selector(timerFinished) userInfo:nil repeats:NO];
         [self.videoRecordTimer invalidate];
     }
 }

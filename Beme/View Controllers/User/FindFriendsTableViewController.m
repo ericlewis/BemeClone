@@ -54,7 +54,12 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    PFUser *user = [self.allUsers objectAtIndex:indexPath.row];
+    
+    // Activity
+    // create an activity, this can be following others, posting a video, creating a reaction
+    
+    /*PFUser *user = [self.allUsers objectAtIndex:indexPath.row];
+    
     
     if ([self isFriend:user]) {
         [self.friendsRelation removeObject:user];
@@ -71,7 +76,7 @@
         
         [self loadFriends];
         [self loadEveryone];
-    }];
+    }];*/
 }
 
 #pragma mark - UITableViewDataSource
