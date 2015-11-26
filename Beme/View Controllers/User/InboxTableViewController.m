@@ -150,7 +150,8 @@
     
     PFQuery *query = [PFQuery orQueryWithSubqueries:@[recipients, senderID]];
     [query orderByDescending:@"createdAt"];
-    
+    [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
+
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (error) {
             NSLog(@"Error: %@ %@", error, error.userInfo);
@@ -176,6 +177,7 @@
     PFQuery *query = [self.friendsRelation query];
     [query whereKey:@"objectId" notEqualTo:[[PFUser currentUser] objectId]];
     [query orderByAscending:@"username"];
+    [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
     [query findObjectsInBackgroundWithBlock:^(NSArray *friends, NSError *error) {
         if (error) {
             NSLog(@"Error: %@ %@", error, error.userInfo);

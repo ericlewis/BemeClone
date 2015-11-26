@@ -11,7 +11,7 @@
 
 @implementation UserFollowCell
 
-- (void)setUser:(PFUser *)user {
+- (void)setUser:(PFUser *)user followers:(BOOL)isFollowers{
     // cache data
     NSDictionary *attributes = [[Cache sharedCache] attributesForUser:user];
     
@@ -22,9 +22,16 @@
     }else{
         @synchronized(self) {
             PFQuery *isFollowingQuery = [PFQuery queryWithClassName:kActivityClassKey];
-            [isFollowingQuery whereKey:kActivityToUserKey equalTo:[PFUser currentUser]];
             [isFollowingQuery whereKey:kActivityTypeKey equalTo:kActivityTypeFollow];
-            [isFollowingQuery whereKey:kActivityFromUserKey equalTo:user];
+            
+            if (isFollowers) {
+                [isFollowingQuery whereKey:kActivityFromUserKey equalTo:user];
+                [isFollowingQuery whereKey:kActivityToUserKey equalTo:[PFUser currentUser]];
+            }else{
+                [isFollowingQuery whereKey:kActivityToUserKey equalTo:user];
+                [isFollowingQuery whereKey:kActivityFromUserKey equalTo:[PFUser currentUser]];
+            }
+            
             [isFollowingQuery setCachePolicy:kPFCachePolicyCacheThenNetwork];
             
             [isFollowingQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {

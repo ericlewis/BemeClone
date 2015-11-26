@@ -45,7 +45,7 @@
     // user
     PFUser *user = [[object objectForKey:@"fromUser"] fetchIfNeeded];
     
-    [cell setUser:user];
+    [cell setUser:user followers:YES];
     
     return cell;
 }

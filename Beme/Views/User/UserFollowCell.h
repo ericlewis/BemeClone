@@ -13,6 +13,6 @@
 
 @property (nonatomic, strong) PFUser *user;
 
-- (void)setUser:(PFUser *)user;
+- (void)setUser:(PFUser *)user followers:(BOOL)isFollowers;
 
 @end
