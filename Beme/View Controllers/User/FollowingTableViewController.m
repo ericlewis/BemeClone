@@ -36,9 +36,6 @@
     return followingActivitiesQuery;
 }
 
-
-#pragma mark - UITableViewDelegate
-
 #pragma mark - UITableViewDelegate
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath object:(PFObject *)object {
@@ -48,6 +45,7 @@
     PFUser *user = [[object objectForKey:@"toUser"] fetchIfNeeded];
     
     [cell setUser:user followers:NO];
+    cell.delegate = self;
     
     return cell;
 }

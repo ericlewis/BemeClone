@@ -49,7 +49,7 @@
     self.notificationBarButtonItem.enabled = NO;
     [self.navigationItem setRightBarButtonItem:self.notificationBarButtonItem];
     
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:NSStringFromClass([UITableViewCell class])];    
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:NSStringFromClass([UITableViewCell class])];
 }
 
 #pragma mark - Lifecycle

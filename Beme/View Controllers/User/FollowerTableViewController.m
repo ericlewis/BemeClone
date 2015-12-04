@@ -46,6 +46,7 @@
     PFUser *user = [[object objectForKey:@"fromUser"] fetchIfNeeded];
     
     [cell setUser:user followers:YES];
+    cell.delegate = self;
     
     return cell;
 }

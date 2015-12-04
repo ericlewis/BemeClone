@@ -12,6 +12,6 @@
 
 #import "UserFollowCell.h"
 
-@interface BaseFollowTableViewController : PFQueryTableViewController
+@interface BaseFollowTableViewController : PFQueryTableViewController <UserFollowCellDelegate>
 
 @end

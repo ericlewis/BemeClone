@@ -58,4 +58,32 @@
     }
 }
 
+#pragma mark - UserFollowCellDelegate
+
+- (void)cell:(UserFollowCell *)cell didTapFollowButton:(PFUser *)user{    
+    if (cell.followButton.selected) {
+        [Utility unfollowUserInBackground:user block:^(BOOL succeeded, NSError *error) {
+            if (succeeded && !error) {
+                [self loadObjects];
+            }else{
+                NSLog(@"error: %@", error);
+            }
+            
+            [cell.followButton setSelected:NO];
+            [cell.followButton sizeToFit];
+        }];
+    }else{
+        [Utility followUserInBackground:user block:^(BOOL succeeded, NSError *error) {
+            if (succeeded && !error) {
+                [self loadObjects];
+            }else{
+                NSLog(@"error: %@", error);
+            }
+            
+            [cell.followButton setSelected:YES];
+            [cell.followButton sizeToFit];
+        }];
+    }
+}
+
 @end
