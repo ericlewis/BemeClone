@@ -14,6 +14,7 @@
 @interface PlaybackViewController ()
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
 @property (nonatomic, strong) NSArray *videos;
+@property (nonatomic, strong) PFObject *currentVideo;
 @property (nonatomic) NSInteger videoPlayCount;
 @end
 
@@ -32,8 +33,9 @@
         self.videos = [[videos reverseObjectEnumerator] allObjects];
         
         // load up the first video, then start the player to go to the next.
-        PFFile *file = [[self.videos objectAtIndex:self.videoPlayCount] valueForKey:@"video"];
-
+        self.currentVideo = [self.videos objectAtIndex:self.videoPlayCount];
+        PFFile *file = [self.currentVideo valueForKey:@"video"];
+        
         NSURL *myURL = [NSURL URLWithString:file.url];
         
         self.moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:myURL];
@@ -54,7 +56,8 @@
     
     // queue up the next one if we can
     if (self.videoPlayCount < self.videos.count) {
-        PFFile *file = [[self.videos objectAtIndex:self.videoPlayCount] valueForKey:@"video"];
+        self.currentVideo = [self.videos objectAtIndex:self.videoPlayCount];
+        PFFile *file = [self.currentVideo valueForKey:@"video"];
         NSURL *myURL = [NSURL URLWithString:file.url];
         [self.moviePlayer setContentURL:myURL];
         [self.moviePlayer play];
