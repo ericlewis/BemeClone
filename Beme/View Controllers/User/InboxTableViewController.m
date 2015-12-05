@@ -100,7 +100,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([UITableViewCell class]) forIndexPath:indexPath];
 
     NSDictionary *videoFile = [self.myVideosArray objectAtIndex:indexPath.row];
-    cell.textLabel.text = [videoFile valueForKey:@"senderName"];
+    cell.textLabel.text = [videoFile valueForKey:@"username"];
     
     return cell;
 }
@@ -166,8 +166,25 @@
         if (error) {
             NSLog(@"Error: %@ %@", error, error.userInfo);
         } else {
-        
-            self.myVideosArray = objects;
+            
+            NSMutableArray *videos = [NSMutableArray new];
+            
+            for(PFObject *video in objects) {
+                
+                NSDictionary *userObject = @{
+                                             @"username"    : [video valueForKey:kVideoSenderNameKey],
+                                             @"videos"      : objects
+                                             };
+                
+                if (![videos containsObject:userObject]) {
+                    [videos addObject:@{
+                                       @"username"    : [video valueForKey:kVideoSenderNameKey],
+                                       @"videos"      : objects
+                                       }];
+                }
+            }
+            
+            self.myVideosArray = videos;
             
             [self.tableView reloadData];
         }
