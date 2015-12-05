@@ -23,9 +23,7 @@
 @property (nonatomic, strong) CaptureViewController *captureVC;
 @property (nonatomic, strong) UIBarButtonItem *notificationBarButtonItem;
 @property (nonatomic, strong) NSArray *myVideosArray;
-
-@property (nonatomic, strong) NSArray *friends;
-@property (nonatomic, strong) PFRelation *friendsRelation;
+@property (nonatomic, strong) NSMutableArray *friends;
 
 @property (nonatomic, assign) UIBackgroundTaskIdentifier videoPostBackgroundTaskId;
 
@@ -67,14 +65,15 @@
             self.captureVC.secondaryDelegate = self;
         }
     }
+    
+    [self loadFriends];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
     [self retrieveVideos];
-    [self loadFriends];
-
+    
     // Set up an observer for proximity changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sensorStateChange:)
                                                  name:@"UIDeviceProximityStateDidChangeNotification" object:nil];    
@@ -146,6 +145,13 @@
 
 - (void)retrieveVideos
 {
+    // retrieve all the videos for the people we follow.
+    
+    // this may be some sort of weird union, because the old method is certainly way easier.
+    
+    // also, maybe just use the old method. it seriously is way easier.
+    
+    // if anyone wants to FIXME, that would be cool. but idk.
     PFQuery *recipients = [PFQuery queryWithClassName:@"VideoObject"];
     [recipients whereKey:@"recipientsIds" equalTo:[[PFUser currentUser] objectId]];
     
@@ -170,30 +176,31 @@
     }];
 }
 
-
 - (void)loadFriends{
     // add ourself.
     NSMutableArray *mutableFriends = [[NSMutableArray alloc] initWithArray:@[[[PFUser currentUser] objectId]]];
-    self.friends = mutableFriends;
     
-    self.friendsRelation = [[PFUser currentUser] objectForKey:@"friendsRelation"];
-    
-    PFQuery *query = [self.friendsRelation query];
-    [query whereKey:@"objectId" notEqualTo:[[PFUser currentUser] objectId]];
-    [query orderByAscending:@"username"];
+    PFQuery *query = [PFQuery queryWithClassName:kActivityClassKey];
+    [query whereKey:kActivityTypeKey equalTo:kActivityTypeFollow];
+    [query whereKey:kActivityFromUserKey equalTo:[PFUser currentUser]];
+    [query selectKeys:@[kActivityToUserKey]];
     [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
     [query findObjectsInBackgroundWithBlock:^(NSArray *friends, NSError *error) {
         if (error) {
             NSLog(@"Error: %@ %@", error, error.userInfo);
         } else {
             for (PFUser *friend in friends) {
-                [mutableFriends addObject:friend.objectId];
+                NSString *objectIdForFriend = [[friend valueForKey:kActivityToUserKey] valueForKey:@"objectId"];
+                if (![mutableFriends containsObject:objectIdForFriend]) {
+                    [mutableFriends addObject:objectIdForFriend];
+                }
             }
             
             self.friends = mutableFriends;
         }
     }];
 }
+
 
 #pragma mark - DGTCompletionViewController
 
@@ -219,6 +226,7 @@
     PFObject *video = [PFObject objectWithClassName:kVideoClassKey];
     [video setObject:[PFUser currentUser] forKey:kVideoUserKey];
     [video setObject:videofile forKey:kVideoFileKey];
+    [video setObject:@(4) forKey:kVideoLengthKey];
     
     // videos are public, but may only be modified by the user who uploaded it
     PFACL *videoACL = [PFACL ACLWithUser:[PFUser currentUser]];
