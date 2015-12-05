@@ -112,10 +112,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     NSDictionary *thing = [self.myVideosArray objectAtIndex:indexPath.row];
-    PFFile *file = [thing valueForKey:@"video"];
     
     // show playback
-    [self presentViewController:[[PlaybackViewController alloc] initWithVideoURLString:file.url] animated:NO completion:nil];
+    [self presentViewController:[[PlaybackViewController alloc] initWithVideoArray:[thing valueForKey:@"videos"]] animated:NO completion:nil];
 }
 
 #pragma mark - UITableViewDataSource

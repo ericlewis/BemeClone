@@ -10,6 +10,6 @@
 
 @interface PlaybackViewController : BaseViewController
 
-- (instancetype)initWithVideoURLString:(NSString*)urlString;
+- (instancetype)initWithVideoArray:(NSArray*)videos;
 
 @end
