@@ -34,8 +34,13 @@ NSString *const kActivityTypeJoined     = @"joined";
 NSString *const kVideoClassKey = @"Video";
 
 // Field keys
-NSString *const kVideoFileKey  = @"video";
-NSString *const kVideoUserKey  = @"user";
+NSString *const kVideoFileKey                = @"video";
+NSString *const kVideoLengthKey              = @"length";
+NSString *const kVideoRecipientsIdsKey       = @"recipientsIds";
+NSString *const kVideoRecipientsUnreadIdsKey = @"recipientsUnreadIds";
+NSString *const kVideoSenderIdKey            = @"senderId";
+NSString *const kVideoSenderNameKey          = @"senderName";
+NSString *const kVideoUserKey                = @"user";
 
 
 #pragma mark - Cached User Attributes

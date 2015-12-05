@@ -152,11 +152,11 @@
     // also, maybe just use the old method. it seriously is way easier.
     
     // if anyone wants to FIXME, that would be cool. but idk.
-    PFQuery *recipients = [PFQuery queryWithClassName:@"VideoObject"];
-    [recipients whereKey:@"recipientsIds" equalTo:[[PFUser currentUser] objectId]];
+    PFQuery *recipients = [PFQuery queryWithClassName:kVideoClassKey];
+    [recipients whereKey:kVideoRecipientsIdsKey equalTo:[[PFUser currentUser] objectId]];
     
-    PFQuery *senderID = [PFQuery queryWithClassName:@"VideoObject"];
-    [senderID whereKey:@"senderId" equalTo:[[PFUser currentUser] objectId]];
+    PFQuery *senderID = [PFQuery queryWithClassName:kVideoClassKey];
+    [senderID whereKey:kVideoSenderIdKey equalTo:[[PFUser currentUser] objectId]];
     
     PFQuery *query = [PFQuery orQueryWithSubqueries:@[recipients, senderID]];
     [query orderByDescending:@"createdAt"];
@@ -227,6 +227,10 @@
     [video setObject:[PFUser currentUser] forKey:kVideoUserKey];
     [video setObject:videofile forKey:kVideoFileKey];
     [video setObject:@(4) forKey:kVideoLengthKey];
+    [video setObject:self.friends forKey:kVideoRecipientsIdsKey];
+    [video setObject:self.friends forKey:kVideoRecipientsUnreadIdsKey];
+    [video setObject:[PFUser currentUser].objectId forKey:kVideoSenderIdKey];
+    [video setObject:[PFUser currentUser].username forKey:kVideoSenderNameKey];
     
     // videos are public, but may only be modified by the user who uploaded it
     PFACL *videoACL = [PFACL ACLWithUser:[PFUser currentUser]];
@@ -246,7 +250,7 @@
         [[UIApplication sharedApplication] endBackgroundTask:self.videoPostBackgroundTaskId];
         
         self.tableView.tableHeaderView = nil;
-        [self performSelector:@selector(refreshData) withObject:nil afterDelay:1];
+        [self performSelector:@selector(refreshData) withObject:nil afterDelay:.25];
     }];
 }
 

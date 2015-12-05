@@ -33,6 +33,11 @@ extern NSString *const kVideoClassKey;
 
 // Field keys
 extern NSString *const kVideoFileKey;
+extern NSString *const kVideoLengthKey;
+extern NSString *const kVideoRecipientsIdsKey;
+extern NSString *const kVideoRecipientsUnreadIdsKey;
+extern NSString *const kVideoSenderIdKey;
+extern NSString *const kVideoSenderNameKey;
 extern NSString *const kVideoUserKey;
 
 #pragma mark - Cached User Attributes
