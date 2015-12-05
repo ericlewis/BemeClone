@@ -62,12 +62,15 @@
         [self.moviePlayer setContentURL:myURL];
         [self.moviePlayer play];
     }else{
+        // no more queues, we should update what videos have been watches then dismiss
         [self dismissVC];
     }
 }
 
 - (void)dismissVC{
     [self.moviePlayer stop];
+    
+    // clear out the watched video ID's.
     [self dismissViewControllerAnimated:NO completion:nil];
 }
 

@@ -247,12 +247,7 @@
     [video setObject:self.friends forKey:kVideoRecipientsUnreadIdsKey];
     [video setObject:[PFUser currentUser].objectId forKey:kVideoSenderIdKey];
     [video setObject:[PFUser currentUser].username forKey:kVideoSenderNameKey];
-    
-    // videos are public, but may only be modified by the user who uploaded it
-    PFACL *videoACL = [PFACL ACLWithUser:[PFUser currentUser]];
-    [videoACL setPublicReadAccess:YES];
-    video.ACL = videoACL;
-    
+
     // Request a background execution task to allow us to finish uploading the video even if the app is backgrounded
     self.videoPostBackgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
         [[UIApplication sharedApplication] endBackgroundTask:self.videoPostBackgroundTaskId];
