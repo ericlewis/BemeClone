@@ -14,6 +14,7 @@
 #import "AccountTableViewController.h"
 #import "CaptureViewController.h"
 #import "PlaybackViewController.h"
+#import "ReactionViewController.h"
 
 #import "FontAwesomeKit/FAKIonIcons.h"
 
@@ -23,6 +24,7 @@
 @property (nonatomic, strong) CaptureViewController *captureVC;
 @property (nonatomic, strong) UIBarButtonItem *notificationBarButtonItem;
 @property (nonatomic, strong) NSArray *myVideosArray;
+@property (nonatomic, strong) NSArray *myReactionsArray;
 @property (nonatomic, strong) NSMutableArray *friends;
 
 @property (nonatomic, assign) UIBackgroundTaskIdentifier videoPostBackgroundTaskId;
@@ -72,7 +74,7 @@
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
-    [self retrieveVideos];
+    [self refreshData];
     
     // Set up an observer for proximity changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sensorStateChange:)
@@ -127,7 +129,7 @@
 #pragma mark - Actions
 
 - (void)showReactionsVC{
-
+    [self presentViewController:[[ReactionViewController alloc] initWithReactionArray:self.myReactionsArray] animated:NO completion:nil];
 }
 
 - (void)showCaptureVC{
@@ -153,14 +155,10 @@
     
     // if anyone wants to FIXME, that would be cool. but idk.
     
-    // get all our followers
-    PFQuery *recipients = [PFQuery queryWithClassName:kVideoClassKey];
-    [recipients whereKey:kVideoRecipientsUnreadIdsKey equalTo:[[PFUser currentUser] objectId]];
-    
-    PFQuery *senderID = [PFQuery queryWithClassName:kVideoClassKey];
-    [senderID whereKey:kVideoSenderIdKey equalTo:[[PFUser currentUser] objectId]];
-    
-    PFQuery *query = [PFQuery orQueryWithSubqueries:@[recipients]];
+    // get all our followers videos
+    PFQuery *query = [PFQuery queryWithClassName:kVideoClassKey];
+    [query whereKey:kVideoRecipientsUnreadIdsKey equalTo:[[PFUser currentUser] objectId]];
+
     [query orderByDescending:@"createdAt"];
     [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
 
@@ -194,6 +192,31 @@
         }
         
         [self.refreshControl endRefreshing];
+    }];
+}
+
+- (void)retrieveReactions{
+    PFQuery *query = [PFQuery queryWithClassName:kReactionClassKey];
+    [query whereKey:kReactionRecipientsUnreadIdKey equalTo:[[PFUser currentUser] objectId]];
+    
+    [query orderByDescending:@"createdAt"];
+    [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
+    
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        [self.notificationBarButtonItem setEnabled:YES];
+        
+        self.myReactionsArray = objects;
+        
+        // no reactions
+        if (objects.count == 0) {
+            [self.notificationBarButtonItem setTitle:@"NO REACTIONS"];
+            [self.notificationBarButtonItem setEnabled:NO];
+
+        }else if(objects.count == 1){
+            [self.notificationBarButtonItem setTitle:@"1 REACTION"];
+        }else{
+            [self.notificationBarButtonItem setTitle:[NSString stringWithFormat:@"%lu REACTIONS", (unsigned long)objects.count]];
+        }
     }];
 }
 
@@ -272,6 +295,7 @@
 
 - (void)refreshData{
     [self retrieveVideos];
+    [self retrieveReactions];
 }
 
 @end
