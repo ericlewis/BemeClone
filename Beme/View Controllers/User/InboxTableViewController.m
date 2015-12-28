@@ -152,13 +152,15 @@
     // also, maybe just use the old method. it seriously is way easier.
     
     // if anyone wants to FIXME, that would be cool. but idk.
+    
+    // get all our followers
     PFQuery *recipients = [PFQuery queryWithClassName:kVideoClassKey];
-    [recipients whereKey:kVideoRecipientsIdsKey equalTo:[[PFUser currentUser] objectId]];
+    [recipients whereKey:kVideoRecipientsUnreadIdsKey equalTo:[[PFUser currentUser] objectId]];
     
     PFQuery *senderID = [PFQuery queryWithClassName:kVideoClassKey];
     [senderID whereKey:kVideoSenderIdKey equalTo:[[PFUser currentUser] objectId]];
     
-    PFQuery *query = [PFQuery orQueryWithSubqueries:@[recipients, senderID]];
+    PFQuery *query = [PFQuery orQueryWithSubqueries:@[recipients]];
     [query orderByDescending:@"createdAt"];
     [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
 
