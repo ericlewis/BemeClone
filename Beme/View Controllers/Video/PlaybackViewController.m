@@ -11,11 +11,13 @@
 #import <AVFoundation/AVFoundation.h>
 
 #import <Parse/Parse.h>
+#import "Constants.h"
 
 @interface PlaybackViewController ()
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
 @property (nonatomic, strong) NSArray *videos;
 @property (nonatomic, strong) PFObject *currentVideo;
+@property (nonatomic, strong) NSString *userBeingWatched;
 @property (nonatomic, strong) NSTimer *pollPlayerTimer;
 @property (nonatomic, strong) UIProgressView *progressBar;
 @property (nonatomic, strong) UIImageView *reactionImageView;
@@ -23,13 +25,17 @@
 @property (nonatomic, strong) AVCaptureStillImageOutput *stillImageOutput;
 @property (nonatomic) NSInteger videoPlayCount;
 @property (nonatomic) BOOL canTakeReaction;
+
+@property (nonatomic, assign) UIBackgroundTaskIdentifier reactionPostBackgroundTaskId;
+
 @end
 
 @implementation PlaybackViewController
 
-- (instancetype)initWithVideoArray:(NSArray *)videos{
+- (instancetype)initWithVideoArray:(NSArray *)videos fromUser:(NSString*)userID{
     if (self = [super init]) {
         self.videoPlayCount = 0;
+        self.userBeingWatched = userID;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playbackFinished) name:MPMoviePlayerPlaybackDidFinishNotification object:nil];
         
@@ -227,9 +233,36 @@
             self.reactionImageView.image = flippedImage;
             
             UIImage *reactionToUpload = [self mergeReactionImage:flippedImage withVideoCapture:[self.moviePlayer thumbnailImageAtTime:self.moviePlayer.currentPlaybackTime timeOption:MPMovieTimeOptionExact]];
-            
+            NSString *filename = [[NSString stringWithFormat:@"%lu", (unsigned long)[[NSDate new] hash]] stringByAppendingString:@".jpeg"];
+
             // save the compiled image to our albums for debug purposes. Should upload this to our shiznit.
             UIImageWriteToSavedPhotosAlbum(reactionToUpload, nil, nil, nil);
+            
+            NSData *photoData = UIImageJPEGRepresentation(reactionToUpload, 1.0);
+            PFFile *photoFile = [PFFile fileWithName:filename data:photoData];
+            
+            // create a video object
+            PFObject *reaction = [PFObject objectWithClassName:kReactionClassKey];
+            [reaction setObject:[PFUser currentUser] forKey:kReactionUserKey];
+            [reaction setObject:photoFile forKey:kReactionFileKey];
+            [reaction setObject:@[self.userBeingWatched] forKey:kReactionRecipientsIdKey];
+            [reaction setObject:@[self.userBeingWatched] forKey:kReactionRecipientsUnreadIdKey];
+            [reaction setObject:[PFUser currentUser].objectId forKey:kReactionSenderIdKey];
+            [reaction setObject:[PFUser currentUser].username forKey:kReactionSenderNameKey];
+            
+            // Request a background execution task to allow us to finish uploading the video even if the app is backgrounded
+            self.reactionPostBackgroundTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+                [[UIApplication sharedApplication] endBackgroundTask:self.reactionPostBackgroundTaskId];
+            }];
+            
+            [reaction saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error){
+                if (error) {
+                    NSLog(@"%@", error);
+                }
+                
+                [[UIApplication sharedApplication] endBackgroundTask:self.reactionPostBackgroundTaskId];
+
+            }];
             
             [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(resetReaction) userInfo:nil repeats:NO];
         }];

@@ -42,6 +42,18 @@ NSString *const kVideoSenderIdKey            = @"senderId";
 NSString *const kVideoSenderNameKey          = @"senderName";
 NSString *const kVideoUserKey                = @"user";
 
+#pragma mark - Reaction Class
+
+// Class key
+NSString *const kReactionClassKey = @"Reaction";
+
+// Field keys
+NSString *const kReactionFileKey               = @"photo";
+NSString *const kReactionRecipientsIdKey       = @"recipientsId";
+NSString *const kReactionRecipientsUnreadIdKey = @"recipientsUnreadId";
+NSString *const kReactionSenderIdKey           = @"senderId";
+NSString *const kReactionSenderNameKey         = @"senderName";
+NSString *const kReactionUserKey               = @"user";
 
 #pragma mark - Cached User Attributes
 

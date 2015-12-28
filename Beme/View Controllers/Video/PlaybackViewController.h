@@ -10,6 +10,6 @@
 
 @interface PlaybackViewController : BaseViewController
 
-- (instancetype)initWithVideoArray:(NSArray*)videos;
+- (instancetype)initWithVideoArray:(NSArray*)videos fromUser:(NSString*)userID;
 
 @end

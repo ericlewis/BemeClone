@@ -115,7 +115,7 @@
     NSDictionary *thing = [self.myVideosArray objectAtIndex:indexPath.row];
     
     // show playback
-    [self presentViewController:[[PlaybackViewController alloc] initWithVideoArray:[thing valueForKey:@"videos"]] animated:NO completion:nil];
+    [self presentViewController:[[PlaybackViewController alloc] initWithVideoArray:[thing valueForKey:@"videos"] fromUser:[thing valueForKey:@"userID"]] animated:NO completion:nil];
 }
 
 #pragma mark - UITableViewDataSource
@@ -175,12 +175,14 @@
                 
                 NSDictionary *userObject = @{
                                              @"username"    : [video valueForKey:kVideoSenderNameKey],
+                                             @"userID"      : [video valueForKey:kVideoSenderIdKey],
                                              @"videos"      : objects
                                              };
                 
                 if (![videos containsObject:userObject]) {
                     [videos addObject:@{
                                        @"username"    : [video valueForKey:kVideoSenderNameKey],
+                                       @"userID"      : [video valueForKey:kVideoSenderIdKey],
                                        @"videos"      : objects
                                        }];
                 }

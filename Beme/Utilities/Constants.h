@@ -40,6 +40,19 @@ extern NSString *const kVideoSenderIdKey;
 extern NSString *const kVideoSenderNameKey;
 extern NSString *const kVideoUserKey;
 
+#pragma mark - Reaction Class
+
+// Class key
+extern NSString *const kReactionClassKey;
+
+// Field keys
+extern NSString *const kReactionFileKey;
+extern NSString *const kReactionRecipientsIdKey;
+extern NSString *const kReactionRecipientsUnreadIdKey;
+extern NSString *const kReactionSenderIdKey;
+extern NSString *const kReactionSenderNameKey;
+extern NSString *const kReactionUserKey;
+
 #pragma mark - Cached User Attributes
 
 // Keys
