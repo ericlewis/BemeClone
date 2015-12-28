@@ -100,7 +100,8 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([UITableViewCell class]) forIndexPath:indexPath];
 
     NSDictionary *videoFile = [self.myVideosArray objectAtIndex:indexPath.row];
-    cell.textLabel.text = [videoFile valueForKey:@"username"];
+    
+    cell.textLabel.text = [NSString stringWithFormat:@"%@ - %lu", [videoFile valueForKey:@"username"], [[videoFile valueForKey:@"videos"] count]];
     
     return cell;
 }
