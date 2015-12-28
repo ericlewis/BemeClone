@@ -236,7 +236,7 @@
             NSString *filename = [[NSString stringWithFormat:@"%lu", (unsigned long)[[NSDate new] hash]] stringByAppendingString:@".jpeg"];
 
             // save the compiled image to our albums for debug purposes. Should upload this to our shiznit.
-            UIImageWriteToSavedPhotosAlbum(reactionToUpload, nil, nil, nil);
+            //UIImageWriteToSavedPhotosAlbum(reactionToUpload, nil, nil, nil);
             
             NSData *photoData = UIImageJPEGRepresentation(reactionToUpload, 1.0);
             PFFile *photoFile = [PFFile fileWithName:filename data:photoData];
