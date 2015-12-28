@@ -8,6 +8,7 @@
 
 #import "PlaybackViewController.h"
 #import <MediaPlayer/MediaPlayer.h>
+#import <AVFoundation/AVFoundation.h>
 
 #import <Parse/Parse.h>
 
@@ -17,7 +18,11 @@
 @property (nonatomic, strong) PFObject *currentVideo;
 @property (nonatomic, strong) NSTimer *pollPlayerTimer;
 @property (nonatomic, strong) UIProgressView *progressBar;
+@property (nonatomic, strong) UIImageView *reactionImageView;
+@property (nonatomic, strong) AVCaptureVideoPreviewLayer *cameraPreviewLayer;
+@property (nonatomic, strong) AVCaptureStillImageOutput *stillImageOutput;
 @property (nonatomic) NSInteger videoPlayCount;
+@property (nonatomic) BOOL canTakeReaction;
 @end
 
 @implementation PlaybackViewController
@@ -63,7 +68,86 @@
             make.left.right.equalTo(self.view);
         }];
         
+        UIView *reactionLayer = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame)/3, CGRectGetHeight(self.view.frame)/3)];
+        [self.view addSubview:reactionLayer];
+        
+        [reactionLayer mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.mas_topLayoutGuideBottom).with.offset(10);
+            make.right.equalTo(self.view).with.offset(-10);
+            make.height.equalTo(@(CGRectGetHeight(self.view.frame)/3));
+            make.width.equalTo(@(CGRectGetWidth(self.view.frame)/3));
+        }];
+        
         [self beginPlayerPolling];
+        
+        AVCaptureSession *session = [[AVCaptureSession alloc] init];
+        session.sessionPreset = AVCaptureSessionPresetHigh;
+        
+        NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+        
+        // only use the front facing camera
+        AVCaptureDevice *device = [devices objectAtIndex:1];
+        
+        NSError *error = nil;
+        AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
+        
+        if (!input) {
+            NSLog(@"Couldn't create video capture device");
+        }
+        [session addInput:input];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            AVCaptureVideoPreviewLayer *newCaptureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:session];
+            UIView *view = reactionLayer;
+            CALayer *viewLayer = [view layer];
+            
+            newCaptureVideoPreviewLayer.frame = view.bounds;
+            
+            [viewLayer addSublayer:newCaptureVideoPreviewLayer];
+            
+            self.cameraPreviewLayer = newCaptureVideoPreviewLayer;
+            self.cameraPreviewLayer.borderColor = [UIColor blackColor].CGColor;
+            self.cameraPreviewLayer.borderWidth = 1;
+            
+            self.stillImageOutput = [[AVCaptureStillImageOutput alloc] init];
+            NSDictionary *outputSettings = [[NSDictionary alloc] initWithObjectsAndKeys: AVVideoCodecJPEG, AVVideoCodecKey, nil];
+            [self.stillImageOutput setOutputSettings:outputSettings];
+            
+            [session addOutput:self.stillImageOutput];
+            
+            [session startRunning];
+            
+            UIButton *reactButton = [UIButton new];
+            [reactButton setBackgroundColor:[UIColor blackColor]];
+            [reactButton setTitle:@"REACT" forState:UIControlStateNormal];
+            [reactionLayer addSubview:reactButton];
+            
+            [reactButton mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.bottom.equalTo(reactionLayer);
+                make.left.right.equalTo(reactionLayer);
+                make.height.equalTo(@30);
+            }];
+            
+            self.reactionImageView = [UIImageView new];
+            [reactionLayer addSubview:self.reactionImageView];
+            
+            [self.reactionImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.edges.equalTo(reactionLayer);
+            }];
+            
+            UIButton *captureButton = [UIButton new];
+            [captureButton setBackgroundColor:[UIColor clearColor]];
+            [captureButton setTitle:@"" forState:UIControlStateNormal];
+            [captureButton addTarget:self action:@selector(captureReaction) forControlEvents:UIControlEventTouchUpInside];
+            [reactionLayer addSubview:captureButton];
+            
+            [captureButton mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.edges.equalTo(reactionLayer);
+            }];
+            
+            self.canTakeReaction = YES;
+            
+        });
     }
     
     return self;
@@ -94,12 +178,20 @@
 }
 
 - (void)playbackFinished{
+    if(self.currentVideo){
+        NSMutableArray *recipientsReadIds = [NSMutableArray arrayWithArray:[self.currentVideo objectForKey:@"recipientsUnreadIds"]];
+        [recipientsReadIds removeObject:[[PFUser currentUser] objectId]];
+        [self.currentVideo setObject:recipientsReadIds forKey:@"recipientsUnreadIds"];
+        [self.currentVideo saveInBackground];
+    }
+    
     // update our video play count since we achieved one.
     self.videoPlayCount++;
     
     // queue up the next one if we can
     if (self.videoPlayCount < self.videos.count){
         self.currentVideo = [self.videos objectAtIndex:self.videoPlayCount];
+        
         PFFile *file = [self.currentVideo valueForKey:@"video"];
         NSURL *myURL = [NSURL URLWithString:file.url];
         [self.moviePlayer setContentURL:myURL];
@@ -110,12 +202,75 @@
     }
 }
 
+- (void)captureReaction{
+    if (self.moviePlayer.playbackState == MPMoviePlaybackStatePlaying && self.canTakeReaction){
+        self.canTakeReaction = NO;
+        
+        AVCaptureConnection *videoConnection = nil;
+        for (AVCaptureConnection *connection in self.stillImageOutput.connections){
+            for (AVCaptureInputPort *port in [connection inputPorts]){
+                if ([[port mediaType] isEqual:AVMediaTypeVideo]){
+                    videoConnection = connection;
+                    break;
+                }
+            }
+            if (videoConnection){
+                break;
+            }
+        }
+        
+        [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler: ^(CMSampleBufferRef imageSampleBuffer, NSError *error){
+            NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];
+            UIImage *image = [[UIImage alloc] initWithData:imageData];
+            UIImage *flippedImage = [UIImage imageWithCGImage:image.CGImage scale:image.scale orientation:UIImageOrientationLeftMirrored];
+            
+            self.reactionImageView.image = flippedImage;
+            
+            UIImage *reactionToUpload = [self mergeReactionImage:flippedImage withVideoCapture:[self.moviePlayer thumbnailImageAtTime:self.moviePlayer.currentPlaybackTime timeOption:MPMovieTimeOptionExact]];
+            
+            // save the compiled image to our albums for debug purposes. Should upload this to our shiznit.
+            UIImageWriteToSavedPhotosAlbum(reactionToUpload, nil, nil, nil);
+            
+            [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(resetReaction) userInfo:nil repeats:NO];
+        }];
+    }
+}
+
+- (void)resetReaction{
+    self.reactionImageView.image = nil;
+    self.canTakeReaction = YES;
+}
+
 - (void)dismissVC{
     [self endPlayerPolling];
     [self.moviePlayer stop];
     
     // clear out the watched video ID's.
     [self dismissViewControllerAnimated:NO completion:nil];
+}
+
+- (UIImage *)mergeReactionImage:(UIImage *)reactionImage withVideoCapture:(UIImage *)videoCaptureImage
+{
+    
+    UIImage *newImage;
+    
+    CGRect rectVideoCapture = CGRectMake(0, 0, videoCaptureImage.size.width, videoCaptureImage.size.height);
+    CGRect rectReactionCapture = CGRectMake(((videoCaptureImage.size.width/3) * 2) - 10, 10, videoCaptureImage.size.width/3, videoCaptureImage.size.height/3);
+
+    // Begin context
+    UIGraphicsBeginImageContextWithOptions(rectVideoCapture.size, NO, 0);
+    
+    // draw images
+    [videoCaptureImage drawInRect:rectVideoCapture];
+    [reactionImage drawInRect:rectReactionCapture];
+
+    // grab context
+    newImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    // end context
+    UIGraphicsEndImageContext();
+    
+    return newImage;
 }
 
 @end
