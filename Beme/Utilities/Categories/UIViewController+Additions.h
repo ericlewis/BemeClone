@@ -13,5 +13,6 @@
 
 - (void)setupBlankBackButton;
 - (void)setupModalDismissButton;
+- (void)setupLeftModalDismissButton;
 
 @end

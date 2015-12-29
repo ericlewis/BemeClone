@@ -16,8 +16,6 @@
 #import "PlaybackViewController.h"
 #import "ReactionViewController.h"
 
-#import "FontAwesomeKit/FAKIonIcons.h"
-
 #import "Constants.h"
 
 @interface InboxTableViewController () <CaptureViewControllerDelegate>
@@ -41,9 +39,8 @@
     // HAX for when we come from login, since its kind of weird.
     self.navigationItem.hidesBackButton = YES;
 
-    // setting icon
-    FAKIonIcons *icon = [FAKIonIcons iosGearIconWithSize:25];
-    [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithImage:[icon imageWithSize:CGSizeMake(25, 25)] style:UIBarButtonItemStylePlain target:self action:@selector(showAccountVC)]];
+    // user account
+    [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:[PFUser currentUser].username style:UIBarButtonItemStylePlain target:self action:@selector(showAccountVC)]];
     
     self.notificationBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"NO REACTIONS" style:UIBarButtonItemStylePlain target:self action:@selector(showReactionsVC)];
     self.notificationBarButtonItem.enabled = NO;
@@ -169,19 +166,24 @@
             
             NSMutableArray *videos = [NSMutableArray new];
             
+            // loop the video objects
             for(PFObject *video in objects) {
                 
+                NSPredicate *pred = [NSPredicate predicateWithFormat:@"senderId == %@", [video valueForKey:kVideoSenderIdKey]];
+                NSArray *filteredArr = [objects filteredArrayUsingPredicate:pred];
+                
+                // extract the sendername / ID - we use this to make sure it is unique.
                 NSDictionary *userObject = @{
                                              @"username"    : [video valueForKey:kVideoSenderNameKey],
                                              @"userID"      : [video valueForKey:kVideoSenderIdKey],
-                                             @"videos"      : objects
+                                             @"videos"      : filteredArr
                                              };
                 
                 if (![videos containsObject:userObject]) {
                     [videos addObject:@{
                                        @"username"    : [video valueForKey:kVideoSenderNameKey],
                                        @"userID"      : [video valueForKey:kVideoSenderIdKey],
-                                       @"videos"      : objects
+                                       @"videos"      : filteredArr
                                        }];
                 }
             }
@@ -221,28 +223,29 @@
 }
 
 - (void)loadFriends{
-    // add ourself.
-    NSMutableArray *mutableFriends = [[NSMutableArray alloc] initWithArray:@[[[PFUser currentUser] objectId]]];
-    
-    PFQuery *query = [PFQuery queryWithClassName:kActivityClassKey];
-    [query whereKey:kActivityTypeKey equalTo:kActivityTypeFollow];
-    [query whereKey:kActivityFromUserKey equalTo:[PFUser currentUser]];
-    [query selectKeys:@[kActivityToUserKey]];
-    [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
-    [query findObjectsInBackgroundWithBlock:^(NSArray *friends, NSError *error) {
-        if (error) {
-            NSLog(@"Error: %@ %@", error, error.userInfo);
-        } else {
-            for (PFUser *friend in friends) {
-                NSString *objectIdForFriend = [[friend valueForKey:kActivityToUserKey] valueForKey:@"objectId"];
-                if (![mutableFriends containsObject:objectIdForFriend]) {
-                    [mutableFriends addObject:objectIdForFriend];
+    if ([PFUser currentUser]) {
+        NSMutableArray *mutableFriends = [[NSMutableArray alloc] initWithArray:@[[[PFUser currentUser] objectId]]];
+        
+        PFQuery *query = [PFQuery queryWithClassName:kActivityClassKey];
+        [query whereKey:kActivityTypeKey equalTo:kActivityTypeFollow];
+        [query whereKey:kActivityFromUserKey equalTo:[PFUser currentUser]];
+        [query selectKeys:@[kActivityToUserKey]];
+        [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
+        [query findObjectsInBackgroundWithBlock:^(NSArray *friends, NSError *error) {
+            if (error) {
+                NSLog(@"Error: %@ %@", error, error.userInfo);
+            } else {
+                for (PFUser *friend in friends) {
+                    NSString *objectIdForFriend = [[friend valueForKey:kActivityToUserKey] valueForKey:@"objectId"];
+                    if (![mutableFriends containsObject:objectIdForFriend]) {
+                        [mutableFriends addObject:objectIdForFriend];
+                    }
                 }
+                
+                self.friends = mutableFriends;
             }
-            
-            self.friends = mutableFriends;
-        }
-    }];
+        }];
+    }
 }
 
 
@@ -294,8 +297,10 @@
 }
 
 - (void)refreshData{
-    [self retrieveVideos];
-    [self retrieveReactions];
+    if ([PFUser currentUser]) {
+        [self retrieveVideos];
+        [self retrieveReactions];
+    }
 }
 
 @end

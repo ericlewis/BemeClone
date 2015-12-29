@@ -18,6 +18,10 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(dismissViewController)];
 }
 
+- (void)setupLeftModalDismissButton{
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(dismissViewController)];
+}
+
 - (void)dismissViewController{
     [self dismissViewControllerAnimated:YES completion:nil];
 }
