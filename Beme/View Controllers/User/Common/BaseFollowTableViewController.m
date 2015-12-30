@@ -7,10 +7,13 @@
 //
 
 #import "BaseFollowTableViewController.h"
+#import "FindFriendsTableViewController.h"
 #import "Constants.h"
 
-@interface BaseFollowTableViewController ()
+#import "Masonry.h"
 
+@interface BaseFollowTableViewController ()
+@property (nonatomic, strong) UIButton *emptyButton;
 @end
 
 @implementation BaseFollowTableViewController
@@ -19,7 +22,18 @@
     if (self = [super init]) {
         self.parseClassName = kActivityClassKey;
         self.pullToRefreshEnabled = YES;
-        self.loadingViewEnabled = NO;
+        self.loadingViewEnabled = YES;
+        
+        self.emptyButton = [UIButton new];
+        [self.emptyButton setTitle:@"Tap here to find people to follow!" forState:UIControlStateNormal];
+        [self.emptyButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.emptyButton addTarget:self action:@selector(pushFindFriends) forControlEvents:UIControlEventTouchUpInside];
+        [self.emptyButton setHidden:YES];
+        [self.tableView addSubview:self.emptyButton];
+        
+        [self.emptyButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.center.equalTo(self.tableView);
+        }];
     }
     
     return self;
@@ -30,6 +44,10 @@
     
     self.tableView.tableFooterView = [UIView new];
     [self.tableView registerClass:[UserFollowCell class] forCellReuseIdentifier:NSStringFromClass([UserFollowCell class])];
+}
+
+- (void)pushFindFriends{
+    [self.navigationController pushViewController:[FindFriendsTableViewController new] animated:YES];
 }
 
 #pragma mark - UITableViewDataSource
@@ -78,6 +96,18 @@
                 NSLog(@"error: %@", error);
             }
         }];
+    }
+}
+
+- (void)objectsDidLoad:(NSError *)error{
+    [super objectsDidLoad:error];
+    
+    if (error || self.objects.count == 0) {
+        NSLog(@"show empty.");
+        [self.emptyButton setHidden:NO];
+    }else{
+        // hide empty view;
+        [self.emptyButton setHidden:YES];
     }
 }
 

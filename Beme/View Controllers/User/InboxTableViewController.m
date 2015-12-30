@@ -190,6 +190,12 @@
             
             self.myVideosArray = videos;
             
+            if (self.myVideosArray.count == 0) {
+                // show empty view
+            }else{
+                // dont?
+            }
+            
             [self.tableView reloadData];
         }
         
