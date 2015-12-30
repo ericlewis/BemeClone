@@ -47,7 +47,7 @@
 }
 
 - (void)pushFindFriends{
-    [self.navigationController pushViewController:[FindFriendsTableViewController new] animated:YES];
+    [self.navigationController setViewControllers:@[self.navigationController.viewControllers[0], [FindFriendsTableViewController new]]];
 }
 
 #pragma mark - UITableViewDataSource

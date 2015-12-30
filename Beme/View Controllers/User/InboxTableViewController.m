@@ -15,12 +15,14 @@
 #import "CaptureViewController.h"
 #import "PlaybackViewController.h"
 #import "ReactionViewController.h"
+#import "FindFriendsTableViewController.h"
 
 #import "Constants.h"
 
 @interface InboxTableViewController () <CaptureViewControllerDelegate>
 @property (nonatomic, strong) CaptureViewController *captureVC;
 @property (nonatomic, strong) UIBarButtonItem *notificationBarButtonItem;
+@property (nonatomic, strong) UIButton *emptyButton;
 @property (nonatomic, strong) NSArray *myVideosArray;
 @property (nonatomic, strong) NSArray *myReactionsArray;
 @property (nonatomic, strong) NSMutableArray *friends;
@@ -47,6 +49,18 @@
     [self.navigationItem setRightBarButtonItem:self.notificationBarButtonItem];
     
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:NSStringFromClass([UITableViewCell class])];
+    
+    // empty view
+    self.emptyButton = [UIButton new];
+    [self.emptyButton setTitle:@"Tap here to find people to follow!" forState:UIControlStateNormal];
+    [self.emptyButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [self.emptyButton addTarget:self action:@selector(showFindFriends) forControlEvents:UIControlEventTouchUpInside];
+    [self.emptyButton setHidden:YES];
+    [self.tableView addSubview:self.emptyButton];
+    
+    [self.emptyButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self.tableView);
+    }];
 }
 
 #pragma mark - Lifecycle
@@ -140,6 +154,14 @@
     [self presentViewController:navVC animated:YES completion:nil];
 }
 
+- (void)showFindFriends{
+    AccountTableViewController *accountVC = [AccountTableViewController new];
+    BaseNavigationController *navVC = [[BaseNavigationController alloc] initWithRootViewController:accountVC];
+    [navVC pushViewController:[FindFriendsTableViewController new] animated:NO];
+    
+    [self presentViewController:navVC animated:YES completion:nil];
+}
+
 #pragma mark - Helper methods
 
 - (void)retrieveVideos
@@ -192,8 +214,10 @@
             
             if (self.myVideosArray.count == 0) {
                 // show empty view
+                [self.emptyButton setHidden:NO];
             }else{
                 // dont?
+                [self.emptyButton setHidden:YES];
             }
             
             [self.tableView reloadData];
