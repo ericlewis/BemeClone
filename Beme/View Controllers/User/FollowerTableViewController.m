@@ -33,8 +33,6 @@
     [followerActivitiesQuery whereKey:kActivityTypeKey equalTo:kActivityTypeFollow];
     [followerActivitiesQuery whereKey:kActivityToUserKey equalTo:[PFUser currentUser]];
     
-    [followerActivitiesQuery setCachePolicy:kPFCachePolicyCacheThenNetwork];
-
     return followerActivitiesQuery;
 }
 

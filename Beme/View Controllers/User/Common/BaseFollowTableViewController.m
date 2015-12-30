@@ -61,7 +61,7 @@
 #pragma mark - UserFollowCellDelegate
 
 - (void)cell:(UserFollowCell *)cell didTapFollowButton:(PFUser *)user{    
-    if (cell.followButton.selected) {
+    if (cell.followButton.selected && !self.isLoading) {
         [Utility unfollowUserInBackground:user block:^(BOOL succeeded, NSError *error) {
             if (succeeded && !error) {
                 [self loadObjects];
@@ -69,6 +69,7 @@
                 NSLog(@"error: %@", error);
             }
         }];
+
     }else{
         [Utility followUserInBackground:user block:^(BOOL succeeded, NSError *error) {
             if (succeeded && !error) {
