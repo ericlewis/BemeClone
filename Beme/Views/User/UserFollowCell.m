@@ -40,9 +40,7 @@
         
         [isFollowingQuery whereKey:kActivityToUserKey equalTo:self.user];
         [isFollowingQuery whereKey:kActivityFromUserKey equalTo:[PFUser currentUser]];
-        
-        [isFollowingQuery setCachePolicy:kPFCachePolicyCacheThenNetwork];
-        
+                
         [isFollowingQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
             [self setFollowing:(!error && number > 0)];
         }];

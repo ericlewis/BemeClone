@@ -68,9 +68,6 @@
             }else{
                 NSLog(@"error: %@", error);
             }
-            
-            [cell.followButton setSelected:NO];
-            [cell.followButton sizeToFit];
         }];
     }else{
         [Utility followUserInBackground:user block:^(BOOL succeeded, NSError *error) {
@@ -79,9 +76,6 @@
             }else{
                 NSLog(@"error: %@", error);
             }
-            
-            [cell.followButton setSelected:YES];
-            [cell.followButton sizeToFit];
         }];
     }
 }
